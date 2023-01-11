@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD 99)
 
 #include_directories(include)
 
-set(SRC src/clops.h src/utils.h)
+set(SRC src/clops.h src/utils.h src/matrix.h src/matrix.c)
 
 add_executable(demo1-exec src/demo1.c ${SRC})
 add_executable(use_case1-exec src/use_case1.c ${SRC})
