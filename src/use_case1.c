@@ -1,22 +1,29 @@
 //#include "claw_api.h"
 #include <stdio.h>
-
-/*
- * ClawErr claw_create_matrix(row, col, dtype);
- * ClawErr claw_create_ones(row, col);
- * ClawErr claw_matmul(mat1, mat2);
- * ClawErr claw_free(mat);
- * void claw_print(mat);
- */
+#include "Claw.h"
 
 int main()
 {
-    /* ClawMatrix a = claw_create_ones(1024, 1024);
-     * ClawMatrix b = claw_create_ones(1024, 1024);
-     * ClawMatrix c = claw_matmul(a, b);
-     * claw_print_matrix(c);
-     * claw_free(a);
-     * claw_free(b);
-     * claw_free(c);
-    */
+	struct ClawMat a;
+	struct ClawMat b;
+	struct ClawMat c;
+	struct ClawMat d;
+	struct ClawMat e;
+	claw_create_ones(&a, 6, 6, CLAW_INT8);
+	claw_create_ones(&b, 6, 6, CLAW_INT16);
+	claw_create_ones(&c, 6, 6, CLAW_UINT32);
+	claw_create_ones(&d, 6, 6, CLAW_INT64);
+	claw_create_ones(&e, 6, 6, CLAW_FLT64);
+
+	claw_print_matrix(stdout, &a);
+	claw_print_matrix(stdout, &b);
+	claw_print_matrix(stdout, &c);
+	claw_print_matrix(stdout, &d);
+	claw_print_matrix(stdout, &e);
+
+	claw_free(&a);
+	claw_free(&b);
+	claw_free(&c);
+	claw_free(&d);
+	claw_free(&e);
 }
