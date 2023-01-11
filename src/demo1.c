@@ -9,9 +9,9 @@
 #include <CL/cl.h>
 #endif
 
-#include "utils.h"
+#include "../include/claw/utils.h"
 #include "matmul.h"
-#include "clops.h"
+#include "opencl/clops.h"
 
 #define MAX_SOURCE_SIZE         0x100000
 #define MAX_MATRIX_DIM_SIZE     65536
