@@ -1,6 +1,6 @@
 #include "claw/utils.h"
 
-size_t claw_dtype_size(enum ClawDType type)
+size_t claw_dtype_size(enum claw_dtype type)
 {
 	switch (type) {
 	case CLAW_INT8:

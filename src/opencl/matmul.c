@@ -1,6 +1,10 @@
 #include "claw/matmul.h"
 
-claw_err claw_matmul(struct ClawMat *a, struct ClawMat *b, struct ClawMat *c)
+claw_err claw_matmul(struct claw_mat *a, struct claw_mat *b, struct claw_mat *c)
 {
-	return 0;
+	if (a->dlen[1] != b->dlen[0]) {
+		return CLAW_MATMUL_E_DIM_MISMATCH;
+	}
+
+	return CLAW_SUCCESS;
 }

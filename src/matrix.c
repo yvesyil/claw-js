@@ -1,7 +1,34 @@
-
 #include "claw/matrix.h"
 
-void claw_print_matrix(FILE *fp, struct ClawMat *mat)
+#define CLAW_INDEX(type, data, idx) *((type *)(data) + idx)
+
+#define __CLAW_CREATE_ONES(type, mat)                                       \
+	do {                                                                \
+		mat->data =                                                 \
+			malloc(mat->dlen[0] * mat->dlen[1] * sizeof(type)); \
+		for (size_t i = 0;                                          \
+		     i < mat->dlen[0] * mat->dlen[1] * sizeof(type); i++) { \
+			CLAW_INDEX(type, mat->data, i) = 1;                 \
+		}                                                           \
+	} while (0);
+
+#define __CLAW_PRINT_MAT(fp, size, mat, ph)                                \
+	do {                                                               \
+		for (size_t i = 0; i < mat->dlen[0]; i++) {                \
+			fprintf(fp, "[ ");                                 \
+			for (size_t j = 0; j < mat->dlen[1] - 1; j++) {    \
+				fprintf(fp, "%-7" ph,                      \
+					CLAW_INDEX(size, mat->data,        \
+						   mat->dlen[1] * i + j)); \
+			}                                                  \
+			fprintf(fp, "%" ph " ]\n",                         \
+				CLAW_INDEX(size, mat->data,                \
+					   mat->dlen[1] * i +              \
+						   (mat->dlen[1] - 1)));   \
+		}                                                          \
+	} while (0);
+
+void claw_print_matrix(FILE *fp, struct claw_mat *mat)
 {
 	fprintf(fp, "\n");
 	switch (mat->dtype) {
@@ -39,19 +66,19 @@ void claw_print_matrix(FILE *fp, struct ClawMat *mat)
 	fprintf(fp, "\n");
 }
 
-claw_err claw_create_matrix(struct ClawMat *mat, claw_dlen row, claw_dlen col,
-			    enum ClawDType dtype)
+claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
+			    enum claw_dtype dtype)
 {
 	mat->data = NULL;
 	mat->dlen[0] = row;
 	mat->dlen[1] = col;
 	mat->dtype = dtype;
 
-	return 0;
+	return CLAW_SUCCESS;
 }
 
-claw_err claw_create_ones(struct ClawMat *mat, claw_dlen row, claw_dlen col,
-			  enum ClawDType dtype)
+claw_err claw_create_ones(struct claw_mat *mat, claw_dlen row, claw_dlen col,
+			  enum claw_dtype dtype)
 {
 	claw_err err = claw_create_matrix(mat, row, col, dtype);
 	if (err != 0) {
@@ -91,11 +118,11 @@ claw_err claw_create_ones(struct ClawMat *mat, claw_dlen row, claw_dlen col,
 		break;
 	}
 
-	return 0;
+	return CLAW_SUCCESS;
 }
 
-claw_err claw_free(struct ClawMat *mat)
+claw_err claw_free(struct claw_mat *mat)
 {
 	free(mat->data);
-	return 0;
+	return CLAW_SUCCESS;
 }

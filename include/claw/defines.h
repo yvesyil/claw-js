@@ -1,7 +1,8 @@
 #ifndef CLAW_JS_INCLUDE_CLAW_DEFINES_H
 #define CLAW_JS_INCLUDE_CLAW_DEFINES_H
 
-enum ClawDType {
+
+enum claw_dtype {
 	CLAW_INT8,
 	CLAW_UINT8,
 	CLAW_INT16,

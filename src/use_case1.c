@@ -4,8 +4,8 @@
 
 int main()
 {
-	struct ClawMat a;
-	struct ClawMat b;
+	struct claw_mat a;
+	struct claw_mat b;
 	claw_create_ones(&a, 1024, 1024, CLAW_UINT32);
 	claw_create_ones(&b, 1024, 1024, CLAW_UINT32);
 

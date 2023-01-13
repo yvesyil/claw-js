@@ -1,15 +1,11 @@
 #ifndef CLAW_JS_INCLUDE_CLAW_ERROR_H
 #define CLAW_JS_INCLUDE_CLAW_ERROR_H
 
-typedef int claw_err;
+typedef enum {
+	CLAW_SUCCESS = 0,
+	CLAW_MATMUL_E_DIM_MISMATCH,
 
-// OpenCL related
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
+} claw_err;
 
-const char *opencl_get_error_string(cl_int error);
 
 #endif //CLAW_JS_INCLUDE_CLAW_ERROR_H
