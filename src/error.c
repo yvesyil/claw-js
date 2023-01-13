@@ -1,4 +1,4 @@
-#include "../include/claw/error.h"
+#include "claw/error.h"
 
 
 const char *opencl_get_error_string(cl_int error)

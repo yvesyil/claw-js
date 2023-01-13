@@ -1,4 +1,4 @@
-#include "../include/claw/utils.h"
+#include "claw/utils.h"
 
 size_t claw_dtype_size(enum ClawDType type)
 {

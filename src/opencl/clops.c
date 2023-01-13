@@ -2,6 +2,7 @@
 #define CLAW_JS_CLOPS_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>

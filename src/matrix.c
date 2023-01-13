@@ -1,7 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
 
-#include "../include/claw/matrix.h"
+#include "claw/matrix.h"
 
 void claw_print_matrix(FILE *fp, struct ClawMat *mat)
 {
@@ -94,10 +92,6 @@ claw_err claw_create_ones(struct ClawMat *mat, claw_dlen row, claw_dlen col,
 	}
 
 	return 0;
-}
-
-claw_err claw_matmul(struct ClawMat *a, struct ClawMat *b, struct ClawMat *c)
-{
 }
 
 claw_err claw_free(struct ClawMat *mat)

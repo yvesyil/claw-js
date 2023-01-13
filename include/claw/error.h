@@ -4,7 +4,6 @@
 typedef int claw_err;
 
 // OpenCL related
-
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else

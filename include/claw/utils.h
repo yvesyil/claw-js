@@ -24,4 +24,6 @@ void print_matrix(float* mat, size_t shape[2])
 
 size_t claw_dtype_size(enum ClawDType type);
 
+#define CLK_DUR_IN_SEC(s, e) (((double) e - s) / CLOCKS_PER_SEC)
+
 #endif //CLAW_JS_UTILS_H
