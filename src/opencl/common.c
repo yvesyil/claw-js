@@ -1,13 +1,110 @@
 #include "common.h"
 
-cl_device_id CLAW_OPENCL_DEV_ID;
-cl_context CLAW_OPENCL_CTX;
-cl_program CLAW_OPENCL_PROG;
-cl_command_queue CLAW_OPENCL_CMD_Q;
+cl_device_id opencl_dev_id;
+cl_context opencl_ctx;
+cl_program opencl_prog;
+cl_command_queue opencl_cmd_q;
+struct opencl_kernel opencl_active_kernel;
 
-const char *_opencl_get_error_string(cl_int error)
+claw_err claw_opencl_get_kernel_src(const char *k_name)
 {
-	switch (error) {
+	FILE *fp;
+	char *k_path = "./kernel/";
+
+	strcat(k_path, k_name);
+
+	opencl_active_kernel.path = k_path;
+
+	fp = fopen(k_path, "r");
+	if (!fp) {
+		fprintf(stderr,
+			claw_get_err_str(CLAW_OPENCL_E_KERNEL_NOT_FOUND));
+		return CLAW_OPENCL_E_KERNEL_NOT_FOUND;
+	}
+
+	opencl_active_kernel.src = (char *)malloc(MAX_SOURCE_SIZE);
+	opencl_active_kernel.src_size =
+		fread(opencl_active_kernel.src, 1, MAX_SOURCE_SIZE, fp);
+
+	return CLAW_SUCCESS;
+}
+
+cl_int claw_opencl_setup_ctx_and_cmd_q(cl_device_id *dev_id, cl_context *ctx,
+				       cl_command_queue *cmd_q)
+{
+	cl_platform_id platform_id;
+	cl_uint num_devs;
+	cl_uint num_platforms;
+
+	cl_int err = clGetPlatformIDs(1, &platform_id, &num_platforms);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+
+	err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, dev_id,
+			     &num_devs);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+
+	*ctx = clCreateContext(NULL, 1, dev_id, NULL, NULL, &err);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+
+	*cmd_q = clCreateCommandQueue(*ctx, *dev_id, 0, &err);
+
+	return err;
+}
+
+cl_int claw_opencl_setup_prog(cl_device_id *dev_id, cl_context *ctx,
+			      cl_program *prog, const char *k_src,
+			      size_t src_size)
+{
+	cl_int err;
+	*prog = clCreateProgramWithSource(
+		ctx, 1, &opencl_active_kernel.src,
+		(const size_t *)&opencl_active_kernel.src_size, &err);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+	err = clBuildProgram(*prog, 1, dev_id, NULL, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+
+	size_t log_size;
+	err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG, 0,
+				    NULL, &log_size);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+
+	uint8_t *messages = (uint8_t *)malloc((1 + log_size) * sizeof(uint8_t));
+	err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG,
+				    log_size, messages, NULL);
+	if (err != CL_SUCCESS) {
+		return err;
+	}
+	messages[log_size] = '\0';
+	if (log_size > 10)
+		printf(">>> Compiler message: %s\n", messages);
+	free(messages);
+
+	return err;
+}
+
+cl_int claw_opencl_setup_buff_and_kernel(cl_context *ctx,
+					 cl_command_queue cmd_q,
+					 cl_program prog, const char *k_name,
+					 ...)
+{
+	// TODO: generic implementation (hard)
+}
+
+const char *_opencl_get_err_str(cl_int err)
+{
+	switch (err) {
 	// run-time and JIT compiler errors
 	case 0:
 		return "CL_SUCCESS";
