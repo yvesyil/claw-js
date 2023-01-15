@@ -23,22 +23,34 @@ struct opencl_kernel {
 	size_t src_size;
 };
 
-const char *_opencl_get_err_str(cl_int err);
+struct opencl_ctx {
+	cl_int err;
+	cl_device_id dev_id;
+	cl_context ctx;
+	cl_program prog;
+	cl_command_queue cmd_q;
+	struct opencl_kernel active_kernel;
+};
 
-claw_err claw_opencl_get_kernel_src(const char *k_name);
+extern struct opencl_ctx claw_opencl_context;
 
-cl_int claw_opencl_setup_ctx_and_cmd_q(cl_device_id *dev_id, cl_context *ctx,
-				       cl_command_queue *cmd_q);
+claw_err claw_opencl_init(struct opencl_ctx *context);
 
-cl_int claw_opencl_setup_prog(cl_device_id *dev_id, cl_context *ctx,
-			      cl_program *prog, const char *k_src,
-			      size_t src_size);
+const char *opencl_get_err_str(cl_int err);
 
+claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context, const char *k_name);
+
+claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context);
+
+claw_err claw_opencl_setup_prog(struct opencl_ctx *context);
+
+/*
 cl_int claw_opencl_setup_buff_and_kernel(cl_context *ctx,
 					 cl_command_queue cmd_q,
 					 cl_program prog, const char *k_name,
 					 ...);
+					 */
 
-claw_err claw_opencl_free_kernel();
+claw_err claw_opencl_free_kernel(struct opencl_ctx *context);
 
 #endif //CLAW_JS_SRC_OPENCL_COMMON_H

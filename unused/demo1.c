@@ -11,7 +11,7 @@
 
 #include "claw/utils.h"
 #include "matmul.h"
-#include "src/opencl/clops.c"
+#include "clops.c"
 
 #define MAX_SOURCE_SIZE 0x100000
 #define MAX_MATRIX_DIM_SIZE 65536

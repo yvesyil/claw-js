@@ -1,19 +1,21 @@
 #include "common.h"
 
-cl_device_id opencl_dev_id;
-cl_context opencl_ctx;
-cl_program opencl_prog;
-cl_command_queue opencl_cmd_q;
-struct opencl_kernel opencl_active_kernel;
+struct opencl_ctx claw_opencl_context;
 
-claw_err claw_opencl_get_kernel_src(const char *k_name)
+claw_err claw_opencl_init(struct opencl_ctx *context)
+{
+	return CLAW_SUCCESS;
+}
+
+claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
+				    const char *k_name)
 {
 	FILE *fp;
 	char *k_path = "./kernel/";
 
 	strcat(k_path, k_name);
 
-	opencl_active_kernel.path = k_path;
+	context->active_kernel.path = k_path;
 
 	fp = fopen(k_path, "r");
 	if (!fp) {
@@ -22,87 +24,110 @@ claw_err claw_opencl_get_kernel_src(const char *k_name)
 		return CLAW_OPENCL_E_KERNEL_NOT_FOUND;
 	}
 
-	opencl_active_kernel.src = (char *)malloc(MAX_SOURCE_SIZE);
-	opencl_active_kernel.src_size =
-		fread(opencl_active_kernel.src, 1, MAX_SOURCE_SIZE, fp);
+	context->active_kernel.src = (char *)malloc(MAX_SOURCE_SIZE);
+	context->active_kernel.src_size =
+		fread(context->active_kernel.src, 1, MAX_SOURCE_SIZE, fp);
+	fclose(fp);
 
 	return CLAW_SUCCESS;
 }
 
-cl_int claw_opencl_setup_ctx_and_cmd_q(cl_device_id *dev_id, cl_context *ctx,
-				       cl_command_queue *cmd_q)
+claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 {
+	cl_device_id *dev_id = context->dev_id;
+	cl_context *ctx = context->ctx;
+	cl_command_queue *cmd_q = context->cmd_q;
+
 	cl_platform_id platform_id;
 	cl_uint num_devs;
 	cl_uint num_platforms;
 
-	cl_int err = clGetPlatformIDs(1, &platform_id, &num_platforms);
-	if (err != CL_SUCCESS) {
-		return err;
+	context->err = clGetPlatformIDs(1, &platform_id, &num_platforms);
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
-	err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, dev_id,
+	context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, dev_id,
 			     &num_devs);
-	if (err != CL_SUCCESS) {
-		return err;
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	*ctx = clCreateContext(NULL, 1, dev_id, NULL, NULL, &err);
-	if (err != CL_SUCCESS) {
-		return err;
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	*cmd_q = clCreateCommandQueue(*ctx, *dev_id, 0, &err);
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
+	}
 
-	return err;
+	return CLAW_SUCCESS;
 }
 
-cl_int claw_opencl_setup_prog(cl_device_id *dev_id, cl_context *ctx,
-			      cl_program *prog, const char *k_src,
-			      size_t src_size)
+claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 {
-	cl_int err;
-	*prog = clCreateProgramWithSource(
-		ctx, 1, &opencl_active_kernel.src,
-		(const size_t *)&opencl_active_kernel.src_size, &err);
-	if (err != CL_SUCCESS) {
-		return err;
+	cl_device_id *dev_id = context->dev_id;
+	cl_context *ctx = context->ctx;
+	cl_program *prog = context->prog;
+
+	const char *k_src = context->active_kernel.src;
+	size_t k_size = context->active_kernel.src_size;
+
+	*prog = clCreateProgramWithSource(ctx, 1, &k_src,
+					  (const size_t *)&k_size, &context->err);
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
-	err = clBuildProgram(*prog, 1, dev_id, NULL, NULL, NULL);
-	if (err != CL_SUCCESS) {
-		return err;
+
+	context->err = clBuildProgram(*prog, 1, dev_id, NULL, NULL, NULL);
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	size_t log_size;
-	err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG, 0,
+	context->err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG, 0,
 				    NULL, &log_size);
-	if (err != CL_SUCCESS) {
-		return err;
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	uint8_t *messages = (uint8_t *)malloc((1 + log_size) * sizeof(uint8_t));
-	err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG,
+	context->err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG,
 				    log_size, messages, NULL);
-	if (err != CL_SUCCESS) {
-		return err;
+	if (context->err != CL_SUCCESS) {
+		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 	messages[log_size] = '\0';
 	if (log_size > 10)
-		printf(">>> Compiler message: %s\n", messages);
+		printf(">>> OpenCL compiler message: %s\n", messages);
 	free(messages);
 
-	return err;
+
+	return CLAW_SUCCESS;
 }
 
-cl_int claw_opencl_setup_buff_and_kernel(cl_context *ctx,
+/*
+claw_err claw_opencl_setup_buff_and_kernel(cl_context *ctx,
 					 cl_command_queue cmd_q,
 					 cl_program prog, const char *k_name,
 					 ...)
 {
-	// TODO: generic implementation (hard)
+	va_list args;
+	va_start(args, k_name);
+
+	va_end(args);
+}
+*/
+
+claw_err claw_opencl_free_kernel(struct opencl_ctx *context)
+{
+	free(context->active_kernel.src);
+	return CLAW_SUCCESS;
 }
 
-const char *_opencl_get_err_str(cl_int err)
+const char *opencl_get_err_str(cl_int err)
 {
 	switch (err) {
 	// run-time and JIT compiler errors

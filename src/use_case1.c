@@ -13,4 +13,5 @@ int main()
 
 	claw_free(&a);
 	claw_free(&b);
+	return EXIT_SUCCESS;
 }

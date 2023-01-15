@@ -41,6 +41,6 @@
 //
 // =================================================================================================
 
-claw_err claw_matmul(struct claw_mat *a, struct claw_mat *b, struct claw_mat *c);
+claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs, struct claw_mat *res);
 
 #endif //CLAW_JS_INCLUDE_CLAW_MATMUL_H
