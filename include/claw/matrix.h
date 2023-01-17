@@ -6,7 +6,6 @@
 
 #include "defines.h"
 #include "error.h"
-#include "utils.h"
 
 struct claw_mat {
 	void *data;

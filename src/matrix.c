@@ -1,4 +1,5 @@
 #include "claw/matrix.h"
+#include "claw/utils.h"
 
 #define CLAW_INDEX(type, data, idx) *((type *)(data) + idx)
 
