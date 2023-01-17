@@ -2,6 +2,35 @@
 
 struct opencl_ctx claw_opencl_context;
 
+void _opencl_query_platform_info(struct opencl_ctx *context)
+{
+	cl_uint num_platforms;
+
+	context->err = clGetPlatformIDs(0, NULL, &num_platforms);
+
+	if (num_platforms > 0) {
+		cl_platform_id *platforms = (cl_platform_id *)malloc(
+			num_platforms * sizeof(cl_platform_id));
+		context->err = clGetPlatformIDs(num_platforms, platforms, NULL);
+	}
+}
+
+void _opencl_query_device_info(struct opencl_ctx *context,
+			       cl_platform_id platform_id)
+{
+	cl_uint *num_devices = &context->num_devices;
+
+	context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 0,
+				      NULL, num_devices);
+	if (num_devices > 0) {
+		context->devices = (cl_device_id *)malloc(*num_devices *
+							  sizeof(cl_device_id));
+		context->err =
+			clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT,
+				       *num_devices, context->devices, NULL);
+	}
+}
+
 claw_err claw_opencl_init(struct opencl_ctx *context)
 {
 	return CLAW_SUCCESS;
@@ -11,10 +40,12 @@ claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
 				    const char *k_name)
 {
 	FILE *fp;
-	char *k_path = "./kernel/";
+	char k_path[59] = "./kernel/";
 
 	strcat(k_path, k_name);
+	strcat(k_path, ".cl");
 
+	context->active_kernel.name = k_name;
 	context->active_kernel.path = k_path;
 
 	fp = fopen(k_path, "r");
@@ -34,9 +65,9 @@ claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
 
 claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 {
-	cl_device_id *dev_id = context->dev_id;
-	cl_context *ctx = context->ctx;
-	cl_command_queue *cmd_q = context->cmd_q;
+	cl_device_id *devices = &context->devices;
+	cl_context *ctx = &context->ctx;
+	cl_command_queue *cmd_q = &context->cmd_q;
 
 	cl_platform_id platform_id;
 	cl_uint num_devs;
@@ -47,18 +78,27 @@ claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
-	context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, dev_id,
+	/*
+	context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 0, NULL,
 			     &num_devs);
+	if (num_devs > 0) {
+		devices = (cl_device_id*)malloc(num_devs * sizeof(cl_device_id));
+		context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, num_devs, devices, NULL);
+	}
+	*/
+	context->err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
+				      devices, &num_devs);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
-	*ctx = clCreateContext(NULL, 1, dev_id, NULL, NULL, &err);
+	*ctx = clCreateContext(NULL, 1, devices, NULL, NULL,
+			       &context->err);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
-	*cmd_q = clCreateCommandQueue(*ctx, *dev_id, 0, &err);
+	*cmd_q = clCreateCommandQueue(*ctx, *devices, 0, &context->err);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
@@ -68,15 +108,15 @@ claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 
 claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 {
-	cl_device_id *dev_id = context->dev_id;
-	cl_context *ctx = context->ctx;
-	cl_program *prog = context->prog;
+	cl_device_id *dev_id = &context->devices;
+	cl_context *ctx = &context->ctx;
+	cl_program *prog = &context->prog;
 
 	const char *k_src = context->active_kernel.src;
 	size_t k_size = context->active_kernel.src_size;
 
-	*prog = clCreateProgramWithSource(ctx, 1, &k_src,
-					  (const size_t *)&k_size, &context->err);
+	*prog = clCreateProgramWithSource(
+		*ctx, 1, &k_src, (const size_t *)&k_size, &context->err);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
@@ -87,15 +127,15 @@ claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 	}
 
 	size_t log_size;
-	context->err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG, 0,
-				    NULL, &log_size);
+	context->err = clGetProgramBuildInfo(
+		*prog, *dev_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	uint8_t *messages = (uint8_t *)malloc((1 + log_size) * sizeof(uint8_t));
-	context->err = clGetProgramBuildInfo(*prog, *dev_id, CL_PROGRAM_BUILD_LOG,
-				    log_size, messages, NULL);
+	context->err = clGetProgramBuildInfo(
+		*prog, *dev_id, CL_PROGRAM_BUILD_LOG, log_size, messages, NULL);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
@@ -104,22 +144,8 @@ claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 		printf(">>> OpenCL compiler message: %s\n", messages);
 	free(messages);
 
-
 	return CLAW_SUCCESS;
 }
-
-/*
-claw_err claw_opencl_setup_buff_and_kernel(cl_context *ctx,
-					 cl_command_queue cmd_q,
-					 cl_program prog, const char *k_name,
-					 ...)
-{
-	va_list args;
-	va_start(args, k_name);
-
-	va_end(args);
-}
-*/
 
 claw_err claw_opencl_free_kernel(struct opencl_ctx *context)
 {

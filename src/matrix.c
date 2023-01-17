@@ -7,7 +7,7 @@
 		mat->data =                                                 \
 			malloc(mat->dlen[0] * mat->dlen[1] * sizeof(type)); \
 		for (size_t i = 0;                                          \
-		     i < mat->dlen[0] * mat->dlen[1] * sizeof(type); i++) { \
+		     i < mat->dlen[0] * mat->dlen[1]; i++) {               \
 			CLAW_INDEX(type, mat->data, i) = 1;                 \
 		}                                                           \
 	} while (0);
@@ -69,7 +69,7 @@ void claw_print_matrix(FILE *fp, struct claw_mat *mat)
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype)
 {
-	mat->data = NULL;
+	mat->data = malloc(row * col * claw_dtype_byte_size(dtype));
 	mat->dlen[0] = row;
 	mat->dlen[1] = col;
 	mat->dtype = dtype;

@@ -25,7 +25,8 @@ struct opencl_kernel {
 
 struct opencl_ctx {
 	cl_int err;
-	cl_device_id dev_id;
+	cl_device_id devices;
+	cl_uint num_devices;
 	cl_context ctx;
 	cl_program prog;
 	cl_command_queue cmd_q;
@@ -43,13 +44,6 @@ claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context, const char *k_na
 claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context);
 
 claw_err claw_opencl_setup_prog(struct opencl_ctx *context);
-
-/*
-cl_int claw_opencl_setup_buff_and_kernel(cl_context *ctx,
-					 cl_command_queue cmd_q,
-					 cl_program prog, const char *k_name,
-					 ...);
-					 */
 
 claw_err claw_opencl_free_kernel(struct opencl_ctx *context);
 
