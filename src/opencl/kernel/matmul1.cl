@@ -1,18 +1,19 @@
-__kernel void matmul1(__global const float *A,
-  __global const size_t *shapeA,
-  __global const float *B,
-  __global const size_t *shapeB,
-  __global float *C,
-  const size_t K /* col size of A, row size of B */ ) {
+// TODO implement type agnostic kernel
+__kernel void matmul1(__global const uint *lhs,
+  __global const size_t *lhs_dlen,
+  __global const uint *rhs,
+  __global const size_t *rhs_dlen,
+  __global uint *res,
+  const size_t K /* col size of lhs, row size of rhs */ ) {
 
   const int row_index = get_global_id(0);
   const int col_index = get_global_id(1);
 
-  float acc = 0.0f;
+  uint acc = 0;
 
   for (size_t k = 0; k < K; k++) {
-    acc += A[row_index + k * shapeA[0]] * B[col_index * K + k];
+    acc += lhs[row_index + k * lhs_dlen[0]] * rhs[col_index * K + k];
   }
 
-  C[col_index * shapeA[0] + row_index] = acc;
+  res[col_index * lhs_dlen[0] + row_index] = acc;
 }

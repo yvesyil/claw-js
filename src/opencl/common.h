@@ -39,7 +39,8 @@ claw_err claw_opencl_init(struct opencl_ctx *context);
 
 const char *opencl_get_err_str(cl_int err);
 
-claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context, const char *k_name);
+claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
+				    const char *k_name);
 
 claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context);
 

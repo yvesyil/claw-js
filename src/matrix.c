@@ -7,8 +7,7 @@
 	do {                                                                \
 		mat->data =                                                 \
 			malloc(mat->dlen[0] * mat->dlen[1] * sizeof(type)); \
-		for (size_t i = 0;                                          \
-		     i < mat->dlen[0] * mat->dlen[1]; i++) {               \
+		for (size_t i = 0; i < mat->dlen[0] * mat->dlen[1]; i++) {  \
 			CLAW_INDEX(type, mat->data, i) = 1;                 \
 		}                                                           \
 	} while (0);

@@ -2,6 +2,14 @@
 
 struct opencl_ctx claw_opencl_context;
 
+void _opencl_print_driver_version(cl_device_id *device_id)
+{
+	char *driver_version;
+	clGetDeviceInfo(*device_id, CL_DRIVER_VERSION, sizeof(char *),
+			&driver_version, NULL);
+	printf("%s\n", driver_version);
+}
+
 void _opencl_query_platform_info(struct opencl_ctx *context)
 {
 	cl_uint num_platforms;
@@ -40,7 +48,7 @@ claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
 				    const char *k_name)
 {
 	FILE *fp;
-	char k_path[59] = "./kernel/";
+	char k_path[59] = "./opencl/kernel/";
 
 	strcat(k_path, k_name);
 	strcat(k_path, ".cl");
@@ -92,8 +100,7 @@ claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
-	*ctx = clCreateContext(NULL, 1, devices, NULL, NULL,
-			       &context->err);
+	*ctx = clCreateContext(NULL, 1, devices, NULL, NULL, &context->err);
 	if (context->err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
@@ -140,8 +147,7 @@ claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 	messages[log_size] = '\0';
-	if (log_size > 10)
-		printf(">>> OpenCL compiler message: %s\n", messages);
+	//printf(">>> OpenCL compiler message: %s\n", messages);
 	free(messages);
 
 	return CLAW_SUCCESS;

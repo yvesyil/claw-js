@@ -8,12 +8,12 @@ static claw_err _opencl_matmul_manage_buffers(struct claw_mat *lhs,
 {
 	cl_int *err = &claw_opencl_context.err;
 
-	size_t lhs_bsize = lhs->dlen[0] * lhs->dlen[1] *
-			   claw_dtype_byte_size(lhs->dtype);
-	size_t rhs_bsize = rhs->dlen[0] * rhs->dlen[1] *
-			   claw_dtype_byte_size(rhs->dtype);
-	size_t res_bsize = res->dlen[0] * res->dlen[1] *
-			   claw_dtype_byte_size(res->dtype);
+	size_t lhs_bsize =
+		lhs->dlen[0] * lhs->dlen[1] * claw_dtype_byte_size(lhs->dtype);
+	size_t rhs_bsize =
+		rhs->dlen[0] * rhs->dlen[1] * claw_dtype_byte_size(rhs->dtype);
+	size_t res_bsize =
+		res->dlen[0] * res->dlen[1] * claw_dtype_byte_size(res->dtype);
 
 	// allocate buffer space
 	cl_context *ctx = &claw_opencl_context.ctx;
@@ -64,22 +64,24 @@ static claw_err _opencl_matmul_manage_buffers(struct claw_mat *lhs,
 	*err = clSetKernelArg(kernel, arg_idx++, sizeof(cl_mem), &rhs_mem);
 	*err = clSetKernelArg(kernel, arg_idx++, sizeof(cl_mem), &rhs_dlen_mem);
 	*err = clSetKernelArg(kernel, arg_idx++, sizeof(cl_mem), &res_mem);
-	*err = clSetKernelArg(kernel, arg_idx++, sizeof(size_t), &lhs->dlen[1]);
+	*err = clSetKernelArg(kernel, arg_idx++, sizeof(size_t),
+			      &(lhs->dlen[1]));
 	if (*err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
-
 	// configure dev threads
 	const size_t glob_witem_size[] = { res->dlen[0], res->dlen[1] };
-	const size_t loc_witem_size[] = { WORK_GROUP_SIZE, WORK_GROUP_SIZE};
+	const size_t loc_witem_size[] = { WORK_GROUP_SIZE, WORK_GROUP_SIZE };
 
-	*err = clEnqueueNDRangeKernel(*cmd_q, kernel, 2, NULL, glob_witem_size, loc_witem_size, 0, NULL, NULL);
+	*err = clEnqueueNDRangeKernel(*cmd_q, kernel, 2, NULL, glob_witem_size,
+				      loc_witem_size, 0, NULL, NULL);
 	if (*err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	// read to resulting matrix from dev
-	*err = clEnqueueReadBuffer(*cmd_q, res_mem, CL_TRUE, 0, res_bsize, res->data, 0, NULL, NULL);
+	*err = clEnqueueReadBuffer(*cmd_q, res_mem, CL_TRUE, 0, res_bsize,
+				   res->data, 0, NULL, NULL);
 	if (*err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
@@ -98,7 +100,6 @@ static claw_err _opencl_matmul_manage_buffers(struct claw_mat *lhs,
 	return CLAW_SUCCESS;
 }
 
-// TODO update kernel code
 claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
 		     struct claw_mat *res)
 {
@@ -117,7 +118,7 @@ claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
 		fprintf(stderr, "%s", claw_get_err_str(err));
 		return err;
 	}
-	err = claw_opencl_get_kernel_src(&claw_opencl_context, "matmul2");
+	err = claw_opencl_get_kernel_src(&claw_opencl_context, "matmul1");
 	if (err != CLAW_SUCCESS) {
 		fprintf(stderr, "%s", claw_get_err_str(err));
 		return err;
@@ -138,8 +139,8 @@ claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
 
 	err = _opencl_matmul_manage_buffers(lhs, rhs, res);
 	if (err != CLAW_SUCCESS) {
-		fprintf(stderr, "%s %s", claw_get_err_str(err)),
-			opencl_get_err_str(claw_opencl_context.err);
+		fprintf(stderr, "%s %s", claw_get_err_str(err),
+			opencl_get_err_str(claw_opencl_context.err));
 		return err;
 	}
 
