@@ -40,68 +40,8 @@ void tearDown()
 	claw_free(&flt64_mat);
 }
 
-void print_mat_int8()
-{
-	claw_print_matrix(stdout, &int8_mat);
-}
-
-void print_mat_uint8()
-{
-	claw_print_matrix(stdout, &uint8_mat);
-}
-
-void print_mat_int16()
-{
-	claw_print_matrix(stdout, &int16_mat);
-}
-
-void print_mat_uint16()
-{
-	claw_print_matrix(stdout, &uint16_mat);
-}
-
-void print_mat_int32()
-{
-	claw_print_matrix(stdout, &int32_mat);
-}
-
-void print_mat_uint32()
-{
-	claw_print_matrix(stdout, &uint32_mat);
-}
-
-void print_mat_int64()
-{
-	claw_print_matrix(stdout, &int64_mat);
-}
-
-void print_mat_uint64()
-{
-	claw_print_matrix(stdout, &uint64_mat);
-}
-
-void print_mat_flt32()
-{
-	claw_print_matrix(stdout, &flt32_mat);
-}
-
-void print_mat_flt64()
-{
-	claw_print_matrix(stdout, &flt64_mat);
-}
-
 int main()
 {
 	UNITY_BEGIN();
-	RUN_TEST(print_mat_int8);
-	RUN_TEST(print_mat_uint8);
-	RUN_TEST(print_mat_int16);
-	RUN_TEST(print_mat_uint16);
-	RUN_TEST(print_mat_int32);
-	RUN_TEST(print_mat_uint32);
-	RUN_TEST(print_mat_int64);
-	RUN_TEST(print_mat_uint64);
-	RUN_TEST(print_mat_flt32);
-	RUN_TEST(print_mat_flt64);
 	return UNITY_END();
 }
