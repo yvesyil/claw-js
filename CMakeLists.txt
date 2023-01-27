@@ -2,14 +2,16 @@ cmake_minimum_required(VERSION 3.1)
 project(Claw.js C)
 
 include(CTest)
+include(scripts/kernel2str.cmake)
+
+kernel2str(src/opencl/kernel/matmul1.cl)
 
 set(CMAKE_C_STANDARD 99)
 
 file(GLOB HEADERS CONFIGURE_DEPENDS include/Claw.h include/claw/*.h)
-file(GLOB SRC CONFIGURE_DEPENDS src/*.c src/*/*.c)
+file(GLOB SRC CONFIGURE_DEPENDS src/*.c src/*/*.c src/*/*/*.c)
 
-#add_executable(use_case1-exec ${HEADERS} ${SRC})
-add_library(claw STATIC ${HEADERS} ${SRC})
+add_library(claw SHARED ${HEADERS} ${SRC})
 
 target_include_directories(claw PUBLIC include)
 

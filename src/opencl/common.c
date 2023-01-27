@@ -44,6 +44,22 @@ claw_err claw_opencl_init(struct opencl_ctx *context)
 	return CLAW_SUCCESS;
 }
 
+claw_err claw_opencl_set_kernel(struct opencl_ctx *context, const char *k_name,
+				const char *k_source)
+{
+	char k_path[59] = "./opencl/kernel/";
+
+	strcat(k_path, k_name);
+	strcat(k_path, ".cl");
+
+	context->active_kernel.name = k_name;
+	context->active_kernel.path = k_path;
+	context->active_kernel.src = k_source;
+	context->active_kernel.src_size = strlen(k_source);
+
+	return CLAW_SUCCESS;
+}
+
 claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
 				    const char *k_name)
 {
@@ -155,7 +171,7 @@ claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 
 claw_err claw_opencl_free_kernel(struct opencl_ctx *context)
 {
-	free(context->active_kernel.src);
+	//free(context->active_kernel.src);
 	return CLAW_SUCCESS;
 }
 

@@ -66,6 +66,11 @@ void claw_print_matrix(FILE *fp, struct claw_mat *mat)
 	fprintf(fp, "\n");
 }
 
+void claw_print_matrix_stdout(struct claw_mat *mat)
+{
+	claw_print_matrix(stdout, mat);
+}
+
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype)
 {

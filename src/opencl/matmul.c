@@ -2,6 +2,8 @@
 #include "claw/utils.h"
 #include "common.h"
 
+extern const char *_opencl_kernel_matmul1;
+
 static claw_err _opencl_matmul_manage_buffers(struct claw_mat *lhs,
 					      struct claw_mat *rhs,
 					      struct claw_mat *res)
@@ -118,7 +120,11 @@ claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
 		fprintf(stderr, "%s", claw_get_err_str(err));
 		return err;
 	}
-	err = claw_opencl_get_kernel_src(&claw_opencl_context, "matmul1");
+
+	//err = claw_opencl_get_kernel_src(&claw_opencl_context, "matmul1");
+
+	err = claw_opencl_set_kernel(&claw_opencl_context, "matmul1",
+				     _opencl_kernel_matmul1);
 	if (err != CLAW_SUCCESS) {
 		fprintf(stderr, "%s", claw_get_err_str(err));
 		return err;
