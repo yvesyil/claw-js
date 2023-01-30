@@ -1,5 +1,5 @@
 #include "unity/unity.h"
-#include "../include/Claw.h"
+#include "../include/claw.h"
 
 static struct claw_mat int8_mat;
 static struct claw_mat uint8_mat;

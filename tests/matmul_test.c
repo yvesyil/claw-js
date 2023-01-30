@@ -1,5 +1,5 @@
 #include "unity/unity.h"
-#include "../include/Claw.h"
+#include "../include/claw.h"
 
 static struct claw_mat int8_mat;
 static struct claw_mat uint8_mat;
@@ -52,7 +52,6 @@ void matmul_test()
 {
 	claw_err err = claw_matmul(&uint32_lhs, &uint32_rhs, &res);
 	TEST_ASSERT_TRUE(err == CLAW_SUCCESS);
-	claw_print_matrix(stdout, &res);
 }
 
 int main()
