@@ -1,5 +1,8 @@
 add_subdirectory(unity)
 
+# for loading the shared library from the start instead of lazy loading
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fno-plt")
+
 add_executable(print_matrix print_matrix_test.c)
 add_executable(matmul matmul_test.c)
 

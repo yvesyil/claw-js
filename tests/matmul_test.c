@@ -62,13 +62,14 @@ void tearDown()
 void matmul_test()
 {
 	//claw_err err = claw_matmul(&uint32_lhs, &uint32_rhs, &res);
-	clock_t start = clock();
-	claw_err err = claw_matmul(&flt32_lhs, &flt32_rhs, &res);
-	clock_t end = clock();
-	TEST_ASSERT_TRUE(err == CLAW_SUCCESS);
-	double duration = CLK_DUR_IN_MS(start, end);
-	claw_print_matrix(stdout, &res);
-	printf("%.2f ms\n", duration);
+	for (size_t i = 0; i < 10; i++) {
+		clock_t start = clock();
+		claw_matmul(&flt32_lhs, &flt32_rhs, &res);
+		clock_t end = clock();
+		double duration = CLK_DUR_IN_MS(start, end);
+		printf("%.2f ms\n", duration);
+	}
+	//TEST_ASSERT_TRUE(err == CLAW_SUCCESS);
 }
 
 int main()

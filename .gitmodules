@@ -1,0 +1,3 @@
+[submodule "extern/CLBlast"]
+	path = extern/CLBlast
+	url = https://github.com/CNugteren/CLBlast

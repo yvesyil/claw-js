@@ -1,3 +1,3 @@
-add_library(clblast SHARED IMPORTED GLOBAL)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build a shared (ON) or static library (OFF)" FORCE)
 
-set_target_properties(clblast PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/libclblast.dylib)
+add_subdirectory(CLBlast)
