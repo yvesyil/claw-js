@@ -16,11 +16,12 @@ struct claw_mat {
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype);
 
-claw_err claw_create_ones(struct claw_mat *mat, claw_dlen row, claw_dlen col,
-			  enum claw_dtype dtype);
+claw_err claw_create_matrix_fill(struct claw_mat *mat, claw_dlen row, claw_dlen col,
+			  enum claw_dtype dtype, void *val);
 
 claw_err claw_free(struct claw_mat *mat);
 
 void claw_print_matrix(FILE *fp, struct claw_mat *mat);
+void claw_print_matrix_stdout(struct claw_mat *mat);
 
 #endif // CLAW_JS_MATRIX_H

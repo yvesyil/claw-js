@@ -6,12 +6,12 @@ dotenv.config()
 
 export const {
     claw_create_matrix,
-    claw_create_ones,
+    claw_create_matrix_fill,
     claw_matmul,
     claw_print_matrix_stdout
 } = ffi.Library(process.env.LIBCLAW_PATH, {
     'claw_create_matrix': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int]],
-    'claw_create_ones': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int]],
+    'claw_create_matrix_fill': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int, ref.refType(ref.types.void)]],
     'claw_matmul': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr, primitives._mat_ptr]],
     'claw_print_matrix_stdout': [ref.types.void, [primitives._mat_ptr]]
 });

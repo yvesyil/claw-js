@@ -12,7 +12,7 @@ add_subdirectory(extern)
 file(GLOB HEADERS CONFIGURE_DEPENDS include/claw.h include/claw/*.h)
 file(GLOB SRC CONFIGURE_DEPENDS src/*.c src/*/*.c src/*/*/*.c)
 
-add_library(claw STATIC ${HEADERS} ${SRC})
+add_library(claw SHARED ${HEADERS} ${SRC})
 
 target_include_directories(claw PUBLIC include)
 

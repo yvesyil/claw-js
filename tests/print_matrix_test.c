@@ -14,16 +14,16 @@ static struct claw_mat flt64_mat;
 
 void setUp()
 {
-	claw_create_ones(&int8_mat, 10, 10, CLAW_INT8);
-	claw_create_ones(&uint8_mat, 10, 10, CLAW_UINT8);
-	claw_create_ones(&int16_mat, 10, 10, CLAW_INT16);
-	claw_create_ones(&uint16_mat, 10, 10, CLAW_UINT16);
-	claw_create_ones(&int32_mat, 10, 10, CLAW_INT32);
-	claw_create_ones(&uint32_mat, 10, 10, CLAW_UINT32);
-	claw_create_ones(&int64_mat, 10, 10, CLAW_INT64);
-	claw_create_ones(&uint64_mat, 10, 10, CLAW_UINT64);
-	claw_create_ones(&flt32_mat, 10, 10, CLAW_FLT32);
-	claw_create_ones(&flt64_mat, 10, 10, CLAW_FLT64);
+	claw_create_matrix_fill(&int8_mat, 10, 10, CLAW_INT8);
+	claw_create_matrix_fill(&uint8_mat, 10, 10, CLAW_UINT8);
+	claw_create_matrix_fill(&int16_mat, 10, 10, CLAW_INT16);
+	claw_create_matrix_fill(&uint16_mat, 10, 10, CLAW_UINT16);
+	claw_create_matrix_fill(&int32_mat, 10, 10, CLAW_INT32);
+	claw_create_matrix_fill(&uint32_mat, 10, 10, CLAW_UINT32);
+	claw_create_matrix_fill(&int64_mat, 10, 10, CLAW_INT64);
+	claw_create_matrix_fill(&uint64_mat, 10, 10, CLAW_UINT64);
+	claw_create_matrix_fill(&flt32_mat, 10, 10, CLAW_FLT32);
+	claw_create_matrix_fill(&flt64_mat, 10, 10, CLAW_FLT64);
 }
 
 void tearDown()
