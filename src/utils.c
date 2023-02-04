@@ -19,3 +19,13 @@ size_t claw_dtype_byte_size(enum claw_dtype type)
 		return 8;
 	}
 }
+
+// TODO implement a proper rand func.
+inline double claw_get_rand_unit()
+{
+	return (double)rand() / (double)RAND_MAX;
+}
+inline float claw_get_rand_unitf()
+{
+	return (float)rand() / (float)RAND_MAX;
+}
