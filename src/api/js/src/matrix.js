@@ -28,11 +28,10 @@ export class Float32Mat extends Matrix {
     }
 
     fill(n) {
-        // TODO fix.
         let buf = new Buffer(4);
         buf.writeFloatLE(n);
         buf.type = ref.types.float;
-        claw_create_matrix_fill(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32, buf.ref());
+        claw_create_matrix_fill(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32, buf);
         return this;
     }
 }
