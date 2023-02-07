@@ -30,10 +30,13 @@ claw_err claw_create_matrix_fill(struct claw_mat *mat, claw_dlen row,
 claw_err claw_create_matrix_rand_unit(struct claw_mat *mat, claw_dlen row,
 				      claw_dlen col, enum claw_dtype dtype);
 
-claw_err claw_matrix_get_idx(struct claw_mat *mat, claw_dlen row,
-			       claw_dlen col, void *val);
-claw_err claw_matrix_set_idx(struct claw_mat *mat, claw_dlen row,
-			       claw_dlen col, void *val);
+claw_err claw_create_matrix_identity(struct claw_mat *mat, claw_dlen row,
+				     claw_dlen col, enum claw_dtype dtype);
+
+claw_err claw_matrix_get_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
+			     void *val);
+claw_err claw_matrix_set_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
+			     void *val);
 
 claw_err claw_free(struct claw_mat *mat);
 

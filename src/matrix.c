@@ -12,20 +12,28 @@
 		}                                                           \
 	} while (0);
 
-#define PRINT_MAT(fp, size, mat, ph)                                       \
+#define PRINT_MAT(fp, type, mat, ph)                                       \
 	do {                                                               \
 		for (size_t i = 0; i < mat->dlen[0]; i++) {                \
 			fprintf(fp, "[ ");                                 \
 			for (size_t j = 0; j < mat->dlen[1] - 1; j++) {    \
 				fprintf(fp, "%-7" ph,                      \
-					CLAW_INDEX(size, mat->data,        \
+					CLAW_INDEX(type, mat->data,        \
 						   mat->dlen[1] * i + j)); \
 			}                                                  \
 			fprintf(fp, "%" ph " ]\n",                         \
-				CLAW_INDEX(size, mat->data,                \
+				CLAW_INDEX(type, mat->data,                \
 					   mat->dlen[1] * i +              \
 						   (mat->dlen[1] - 1)));   \
 		}                                                          \
+	} while (0);
+
+#define FILL_DIAGONAL(type, mat, val)                         \
+	do {                                                  \
+		claw_dlen s = mat->dlen[0];                   \
+		for (claw_dlen i = 0; i < s * s; i += s + 1) {    \
+			CLAW_INDEX(type, mat->data, i) = val; \
+		}                                             \
 	} while (0);
 
 void claw_print_matrix(FILE *fp, struct claw_mat *mat)
@@ -74,7 +82,7 @@ void claw_print_matrix_stdout(struct claw_mat *mat)
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype)
 {
-	mat->data = malloc(row * col * claw_dtype_byte_size(dtype));
+	mat->data = calloc(row * col, claw_dtype_byte_size(dtype));
 	mat->dlen[0] = row;
 	mat->dlen[1] = col;
 	mat->dtype = dtype;
@@ -245,6 +253,51 @@ claw_err claw_create_matrix_rand_unit(struct claw_mat *mat, claw_dlen row,
 		break;
 	case CLAW_FLT64:
 		CREATE_FILL(double, mat, claw_get_rand_unit());
+		break;
+	}
+
+	return CLAW_SUCCESS;
+}
+
+claw_err claw_create_matrix_identity(struct claw_mat *mat, claw_dlen row,
+				     claw_dlen col, enum claw_dtype dtype)
+{
+	if (row != col) {
+		return CLAW_MATRIX_E_INVALID_DIMS;
+	}
+
+	claw_err err = claw_create_matrix(mat, row, col, dtype);
+
+	switch (mat->dtype) {
+	case CLAW_INT8:
+		FILL_DIAGONAL(int8_t, mat, 1);
+		break;
+	case CLAW_UINT8:
+		FILL_DIAGONAL(uint8_t, mat, 1);
+		break;
+	case CLAW_INT16:
+		FILL_DIAGONAL(int16_t, mat, 1);
+		break;
+	case CLAW_UINT16:
+		FILL_DIAGONAL(uint16_t, mat, 1);
+		break;
+	case CLAW_INT32:
+		FILL_DIAGONAL(int32_t, mat, 1);
+		break;
+	case CLAW_UINT32:
+		FILL_DIAGONAL(uint32_t, mat, 1);
+		break;
+	case CLAW_INT64:
+		FILL_DIAGONAL(int64_t, mat, 1);
+		break;
+	case CLAW_UINT64:
+		FILL_DIAGONAL(uint64_t, mat, 1);
+		break;
+	case CLAW_FLT32:
+		FILL_DIAGONAL(float, mat, 1);
+		break;
+	case CLAW_FLT64:
+		FILL_DIAGONAL(double, mat, 1);
 		break;
 	}
 

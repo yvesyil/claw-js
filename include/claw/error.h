@@ -8,10 +8,13 @@ typedef enum {
 	CLAW_OPENCL_E_INTERNAL_IMPL = -100,
 	CLAW_OPENCL_E_KERNEL_NOT_FOUND = -101,
 
-	// matrix operation errors
+	// matrix erros
 	CLAW_MATRIX_E_INDEX_OUT_OF_BOUNDS = -200,
 	CLAW_MATRIX_E_INVALID_DTYPE = -201,
-	CLAW_MATMUL_E_DIM_MISMATCH = -202,
+	CLAW_MATRIX_E_INVALID_DIMS = -202,
+
+	// matrix operation errors
+	CLAW_MATMUL_E_DIM_MISMATCH = -250,
 } claw_err;
 
 const char *claw_get_err_str(claw_err err);
