@@ -313,3 +313,4 @@ claw_err claw_free(struct claw_mat *mat)
 #undef CREATE_FILL
 #undef PRINT_MAT
 #undef CLAW_INDEX
+#undef FILL_DIAGONAL
