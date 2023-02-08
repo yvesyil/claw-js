@@ -12,63 +12,110 @@
 		}                                                           \
 	} while (0);
 
-#define PRINT_MAT(fp, type, mat, ph)                                       \
-	do {                                                               \
-		for (size_t i = 0; i < mat->dlen[0]; i++) {                \
-			fprintf(fp, "[ ");                                 \
-			for (size_t j = 0; j < mat->dlen[1] - 1; j++) {    \
-				fprintf(fp, "%-7" ph,                      \
-					CLAW_INDEX(type, mat->data,        \
-						   mat->dlen[1] * i + j)); \
-			}                                                  \
-			fprintf(fp, "%" ph " ]\n",                         \
-				CLAW_INDEX(type, mat->data,                \
-					   mat->dlen[1] * i +              \
-						   (mat->dlen[1] - 1)));   \
-		}                                                          \
+#define __PRINT_INNER(fp, type, mat, ph, flag)                              \
+	do {                                                                \
+		if (flag) {                                                 \
+			for (size_t j = 0; j < 8; j++) {                    \
+				fprintf(fp, "%-7" ph,                       \
+					CLAW_INDEX(type, mat->data,         \
+						   mat->dlen[1] * i + j));  \
+			}                                                   \
+			fprintf(fp, "%-7s", "...");                         \
+			for (size_t j = mat->dlen[1] - 8; j < mat->dlen[1]; \
+			     j++) {                                         \
+				fprintf(fp, "%-7" ph,                       \
+					CLAW_INDEX(type, mat->data,         \
+						   mat->dlen[1] * i + j));  \
+			}                                                   \
+		} else {                                                    \
+			for (size_t j = 0; j < mat->dlen[1]; j++) {         \
+				fprintf(fp, "%-7" ph,                       \
+					CLAW_INDEX(type, mat->data,         \
+						   mat->dlen[1] * i + j));  \
+			}                                                   \
+		}                                                           \
+		fprintf(fp, "\n");                                          \
 	} while (0);
 
-#define FILL_DIAGONAL(type, mat, val)                         \
-	do {                                                  \
-		claw_dlen s = mat->dlen[0];                   \
-		for (claw_dlen i = 0; i < s * s; i += s + 1) {    \
-			CLAW_INDEX(type, mat->data, i) = val; \
-		}                                             \
+#define PRINT_MAT(fp, type, mat, ph, flags)                                 \
+	do {                                                                \
+		if (flags[0]) {                                             \
+			for (size_t i = 0; i < 8; i++) {                    \
+				__PRINT_INNER(fp, type, mat, ph, flags[1])  \
+			}                                                   \
+			for (size_t a = 0; a < 1; a++) {                    \
+				for (size_t i = 0; i < 8; i++) {            \
+					fprintf(fp, "%-7s", "...");         \
+				}                                           \
+				if (flags[1]) {                             \
+					fprintf(fp, "%-7s", "...");         \
+				}                                           \
+				for (size_t i = 8; i < 16; i++) {           \
+					fprintf(fp, "%-7s", "...");         \
+				}                                           \
+				fprintf(fp, "\n");                          \
+			}                                                   \
+			for (size_t i = mat->dlen[0] - 8; i < mat->dlen[0]; \
+			     i++) {                                         \
+				__PRINT_INNER(fp, type, mat, ph, flags[1])  \
+			}                                                   \
+		} else {                                                    \
+			for (size_t i = 0; i < mat->dlen[0]; i++) {         \
+				__PRINT_INNER(fp, type, mat, ph, flags[1])  \
+			}                                                   \
+		}                                                           \
+                                                                            \
+	} while (0);
+
+#define FILL_DIAGONAL(type, mat, val)                          \
+	do {                                                   \
+		claw_dlen s = mat->dlen[0];                    \
+		for (claw_dlen i = 0; i < s * s; i += s + 1) { \
+			CLAW_INDEX(type, mat->data, i) = val;  \
+		}                                              \
 	} while (0);
 
 void claw_print_matrix(FILE *fp, struct claw_mat *mat)
 {
+	bool flags[] = { false, false };
+	if (mat->dlen[0] > 16) {
+		flags[0] = true;
+	}
+	if (mat->dlen[1] > 16) {
+		flags[1] = true;
+	}
+
 	fprintf(fp, "\n");
 	switch (mat->dtype) {
 	case CLAW_INT8:
-		PRINT_MAT(fp, int8_t, mat, "hhd");
+		PRINT_MAT(fp, int8_t, mat, "hhd", flags);
 		break;
 	case CLAW_UINT8:
-		PRINT_MAT(fp, uint8_t, mat, "hhu");
+		PRINT_MAT(fp, uint8_t, mat, "hhu", flags);
 		break;
 	case CLAW_INT16:
-		PRINT_MAT(fp, int16_t, mat, "hd");
+		PRINT_MAT(fp, int16_t, mat, "hd", flags);
 		break;
 	case CLAW_UINT16:
-		PRINT_MAT(fp, uint16_t, mat, "hu");
+		PRINT_MAT(fp, uint16_t, mat, "hu", flags);
 		break;
 	case CLAW_INT32:
-		PRINT_MAT(fp, int32_t, mat, "d");
+		PRINT_MAT(fp, int32_t, mat, "d", flags);
 		break;
 	case CLAW_UINT32:
-		PRINT_MAT(fp, uint32_t, mat, "u");
+		PRINT_MAT(fp, uint32_t, mat, "u", flags);
 		break;
 	case CLAW_INT64:
-		PRINT_MAT(fp, int64_t, mat, "lld");
+		PRINT_MAT(fp, int64_t, mat, "lld", flags);
 		break;
 	case CLAW_UINT64:
-		PRINT_MAT(fp, uint64_t, mat, "llu");
+		PRINT_MAT(fp, uint64_t, mat, "llu", flags);
 		break;
 	case CLAW_FLT32:
-		PRINT_MAT(fp, float, mat, ".1f");
+		PRINT_MAT(fp, float, mat, ".1f", flags);
 		break;
 	case CLAW_FLT64:
-		PRINT_MAT(fp, double, mat, ".2lf");
+		PRINT_MAT(fp, double, mat, ".2lf", flags);
 		break;
 	}
 	fprintf(fp, "\n");
@@ -311,6 +358,7 @@ claw_err claw_free(struct claw_mat *mat)
 }
 
 #undef CREATE_FILL
+#undef __PRINT_INNER
 #undef PRINT_MAT
 #undef CLAW_INDEX
 #undef FILL_DIAGONAL
