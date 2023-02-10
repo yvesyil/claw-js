@@ -2,8 +2,11 @@ import ffi from 'ffi-napi';
 import ref from 'ref-napi';
 import primitives from './primitives.js';
 import * as dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config()
+const __dirname = path.resolve();
+
+dotenv.config({path: `${__dirname}/node_modules/claw-js/.env`});
 
 export const {
     claw_create_matrix,
