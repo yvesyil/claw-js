@@ -17,6 +17,10 @@ try {
 
     const libclaw = 'libclaw.dylib';
 
+    if (!fs.existsSync('../.bin')) {
+        fs.mkdirSync('../.bin');
+    }
+
     fs.renameSync(`./build/${libclaw}`, `../.bin/${libclaw}`);
 
     const libclawAbsolutePath = `${__dirname}/node_modules/.bin/${libclaw}`;
