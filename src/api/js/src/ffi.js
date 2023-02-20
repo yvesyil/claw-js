@@ -9,6 +9,7 @@ const __dirname = path.resolve();
 dotenv.config({path: `${__dirname}/node_modules/claw-js/.env`});
 
 export const {
+    claw_init,
     claw_create_matrix,
     claw_create_matrix_fill,
     claw_create_matrix_rand_unit,
@@ -18,6 +19,7 @@ export const {
     claw_matmul,
     claw_print_matrix_stdout
 } = ffi.Library(process.env.LIBCLAW_PATH, {
+    'claw_init': [ref.types.int, []],
     'claw_create_matrix': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int]],
     'claw_create_matrix_fill': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int, ref.refType(ref.types.void)]],
     'claw_create_matrix_rand_unit': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.types.int]],

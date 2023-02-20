@@ -1,7 +1,6 @@
 #include "common.h"
 
-struct opencl_ctx claw_opencl_context;
-
+/*
 void _opencl_print_driver_version(cl_device_id *device_id)
 {
 	char *driver_version;
@@ -10,7 +9,7 @@ void _opencl_print_driver_version(cl_device_id *device_id)
 	printf("%s\n", driver_version);
 }
 
-void _opencl_query_platform_info(struct opencl_ctx *context)
+void _opencl_query_platform_info(struct claw_opencl_ctx *context)
 {
 	cl_uint num_platforms;
 
@@ -23,7 +22,7 @@ void _opencl_query_platform_info(struct opencl_ctx *context)
 	}
 }
 
-void _opencl_query_device_info(struct opencl_ctx *context,
+void _opencl_query_device_info(struct claw_opencl_ctx *context,
 			       cl_platform_id platform_id)
 {
 	cl_uint *num_devices = &context->num_devices;
@@ -38,13 +37,23 @@ void _opencl_query_device_info(struct opencl_ctx *context,
 				       *num_devices, context->devices, NULL);
 	}
 }
+ */
 
-claw_err claw_opencl_init(struct opencl_ctx *context)
+claw_err claw_opencl_init(struct claw_opencl_ctx *context)
 {
+	claw_err err;
+
+	err = claw_opencl_setup_ctx_and_cmd_q(context);
+	if (err != CLAW_SUCCESS) {
+		fprintf(stderr, "%s %s", claw_get_err_str(err),
+			opencl_get_err_str(context->err));
+		return err;
+	}
+
 	return CLAW_SUCCESS;
 }
 
-claw_err claw_opencl_set_kernel(struct opencl_ctx *context, const char *k_name,
+claw_err claw_opencl_set_kernel(struct claw_opencl_ctx *context, const char *k_name,
 				const char *k_source)
 {
 	char k_path[59] = "./opencl/kernel/";
@@ -60,7 +69,7 @@ claw_err claw_opencl_set_kernel(struct opencl_ctx *context, const char *k_name,
 	return CLAW_SUCCESS;
 }
 
-claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
+claw_err claw_opencl_get_kernel_src(struct claw_opencl_ctx *context,
 				    const char *k_name)
 {
 	FILE *fp;
@@ -87,7 +96,7 @@ claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
 	return CLAW_SUCCESS;
 }
 
-claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
+claw_err claw_opencl_setup_ctx_and_cmd_q(struct claw_opencl_ctx *context)
 {
 	cl_device_id *devices = &context->devices;
 	cl_context *ctx = &context->ctx;
@@ -129,7 +138,7 @@ claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context)
 	return CLAW_SUCCESS;
 }
 
-claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
+claw_err claw_opencl_setup_prog(struct claw_opencl_ctx *context)
 {
 	cl_device_id *dev_id = &context->devices;
 	cl_context *ctx = &context->ctx;
@@ -169,7 +178,7 @@ claw_err claw_opencl_setup_prog(struct opencl_ctx *context)
 	return CLAW_SUCCESS;
 }
 
-claw_err claw_opencl_free_kernel(struct opencl_ctx *context)
+claw_err claw_opencl_free_kernel(struct claw_opencl_ctx *context)
 {
 	//free(context->active_kernel.src);
 	return CLAW_SUCCESS;

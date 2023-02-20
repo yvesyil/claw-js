@@ -3,10 +3,12 @@
 #include "common.h"
 #include "clblast_c.h"
 
+extern struct claw_opencl_ctx ctx;
+
 static claw_err manage_buffers(struct claw_mat *lhs, struct claw_mat *rhs,
 			       struct claw_mat *res)
 {
-	cl_int *err = &claw_opencl_context.err;
+	cl_int *err = &ctx.err;
 
 	size_t lhs_bsize =
 		lhs->dlen[0] * lhs->dlen[1] * claw_dtype_byte_size(lhs->dtype);
@@ -16,20 +18,20 @@ static claw_err manage_buffers(struct claw_mat *lhs, struct claw_mat *rhs,
 		res->dlen[0] * res->dlen[1] * claw_dtype_byte_size(res->dtype);
 
 	// allocate buffer space
-	cl_context *ctx = &claw_opencl_context.ctx;
+	//cl_context *ctx = &claw_opencl_context.ctx;
 
 	cl_mem lhs_mem =
-		clCreateBuffer(*ctx, CL_MEM_READ_WRITE, lhs_bsize, NULL, err);
+		clCreateBuffer(ctx.ctx, CL_MEM_READ_WRITE, lhs_bsize, NULL, err);
 	cl_mem rhs_mem =
-		clCreateBuffer(*ctx, CL_MEM_READ_WRITE, rhs_bsize, NULL, err);
+		clCreateBuffer(ctx.ctx, CL_MEM_READ_WRITE, rhs_bsize, NULL, err);
 	cl_mem res_mem =
-		clCreateBuffer(*ctx, CL_MEM_READ_WRITE, res_bsize, NULL, err);
+		clCreateBuffer(ctx.ctx, CL_MEM_READ_WRITE, res_bsize, NULL, err);
 	if (*err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
 	}
 
 	// write data to buffers
-	cl_command_queue *cmd_q = &claw_opencl_context.cmd_q;
+	cl_command_queue *cmd_q = &ctx.cmd_q;
 
 	*err = clEnqueueWriteBuffer(*cmd_q, lhs_mem, CL_TRUE, 0, lhs_bsize,
 				    lhs->data, 0, NULL, NULL);
@@ -82,27 +84,12 @@ claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
 
 	claw_create_matrix(res, lhs->dlen[0], rhs->dlen[1], lhs->dtype);
 
-	err = claw_opencl_init(&claw_opencl_context);
-	if (err != CLAW_SUCCESS) {
-		fprintf(stderr, "%s", claw_get_err_str(err));
-		return err;
-	}
-
-	err = claw_opencl_setup_ctx_and_cmd_q(&claw_opencl_context);
-	if (err != CLAW_SUCCESS) {
-		fprintf(stderr, "%s %s", claw_get_err_str(err),
-			opencl_get_err_str(claw_opencl_context.err));
-		return err;
-	}
-
 	err = manage_buffers(lhs, rhs, res);
 	if (err != CLAW_SUCCESS) {
 		fprintf(stderr, "%s %s", claw_get_err_str(err),
-			opencl_get_err_str(claw_opencl_context.err));
+			opencl_get_err_str(ctx.err));
 		return err;
 	}
-
-	claw_opencl_free_kernel(&claw_opencl_context);
 
 	return CLAW_SUCCESS;
 }
