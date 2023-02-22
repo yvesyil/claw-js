@@ -46,6 +46,5 @@ You can either download the installer available for CMake or use a package manag
 This will install the npm package and then run the install script that compiles the CMake project from source automatically.
 
 ```sh
-$ npm install claw-js
-$ npx claw-js
+$ npx claw-js@latest
 ```

@@ -38,7 +38,10 @@ try {
 
 (async () => {
     try {
-        child_process.execSync(`git clone --recursive --branch clblast https://github.com/tussoftwaredesign/claw-js.git ${__dirname}/node_modules/claw-src`);
+        if (fs.existsSync(`${__dirname}/node_modules/claw-src`)) {
+            fs.rmSync(`${__dirname}/node_modules/claw-src`, {force: true, recursive: true});
+        }
+        child_process.execSync(`git clone --recursive --branch dev https://github.com/tussoftwaredesign/claw-js.git ${__dirname}/node_modules/claw-src`);
 
         process.chdir(`${__dirname}/node_modules/claw-src`);
 
@@ -66,10 +69,16 @@ try {
 
         const libclawAbsolutePath = `${__dirname}/node_modules/.bin/${libclaw}`;
 
+        if (!fs.existsSync('../claw-js')) {
+            fs.mkdirSync('../claw-js');
+        }
+
         fs.writeFileSync('../claw-js/.env', `LIBCLAW_PATH=${libclawAbsolutePath}`);
 
         process.chdir(`../..`);
         fs.rmSync('./node_modules/claw-src', {force: true, recursive: true});
+
+        console.log('Claw.js installed.');
     } catch (err) {
         console.error(err);
     }
