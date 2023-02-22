@@ -25,6 +25,7 @@ inline double claw_get_rand_unit()
 {
 	return (double)rand() / (double)RAND_MAX;
 }
+
 inline float claw_get_rand_unitf()
 {
 	return (float)rand() / (float)RAND_MAX;
