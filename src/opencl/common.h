@@ -5,50 +5,24 @@
 
 #include "claw/device.h"
 
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
-
 #define MAX_SOURCE_SIZE 0x100000
-#define MAX_MATRIX_DIM_SIZE 65536
 
-#define WORK_GROUP_SIZE 16
+extern struct claw_opencl_ctx claw_opencl_context;
 
-struct opencl_kernel {
-	char *name;
-	char *path;
-	char *src;
-	size_t src_size;
-};
-
-struct opencl_ctx {
-	cl_int err;
-	cl_device_id devices;
-	cl_uint num_devices;
-	cl_context ctx;
-	cl_program prog;
-	cl_command_queue cmd_q;
-	struct opencl_kernel active_kernel;
-};
-
-extern struct opencl_ctx claw_opencl_context;
-
-claw_err claw_opencl_init(struct opencl_ctx *context);
+claw_err claw_opencl_init(struct claw_opencl_ctx *context);
 
 const char *opencl_get_err_str(cl_int err);
 
-claw_err claw_opencl_set_kernel(struct opencl_ctx *context, const char *k_name,
+claw_err claw_opencl_set_kernel(struct claw_opencl_ctx *context, const char *k_name,
 				const char *k_source);
 
-claw_err claw_opencl_get_kernel_src(struct opencl_ctx *context,
+claw_err claw_opencl_get_kernel_src(struct claw_opencl_ctx *context,
 				    const char *k_name);
 
-claw_err claw_opencl_setup_ctx_and_cmd_q(struct opencl_ctx *context);
+claw_err claw_opencl_setup_ctx_and_cmd_q(struct claw_opencl_ctx *context);
 
-claw_err claw_opencl_setup_prog(struct opencl_ctx *context);
+claw_err claw_opencl_setup_prog(struct claw_opencl_ctx *context);
 
-claw_err claw_opencl_free_kernel(struct opencl_ctx *context);
+claw_err claw_opencl_free_kernel(struct claw_opencl_ctx *context);
 
 #endif //CLAW_JS_SRC_OPENCL_COMMON_H
