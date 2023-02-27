@@ -4,82 +4,82 @@ import path from 'path';
 import fs from 'fs';
 
 async function compile() {
-    let compilation = child_process.spawn('cmake', ['--build', 'build', '-j10']);
+	let compilation = child_process.spawn('cmake', ['--build', 'build', '-j10']);
 
-    compilation.stdout.setEncoding('utf-8');
-    compilation.stderr.setEncoding('utf-8');
+	compilation.stdout.setEncoding('utf-8');
+	compilation.stderr.setEncoding('utf-8');
 
-    compilation.stdout.on('data', data => {
-        console.log(data);
-    });
+	compilation.stdout.on('data', data => {
+		console.log(data);
+	});
 
-    compilation.stderr.on('data', data => {
-        console.error(data);
-    });
+	compilation.stderr.on('data', data => {
+		console.error(data);
+	});
 
-    return new Promise((resolve, reject) => {
-        compilation.on('close', resolve);
-    });
+	return new Promise((resolve, reject) => {
+		compilation.on('close', resolve);
+	});
 }
 
 const __dirname = path.resolve();
 
 try {
-    child_process.execSync('cmake --version');
+	child_process.execSync('cmake --version');
 } catch (err) {
-    console.error(err, "\nplease install cmake before trying to install claw-js.");
+	console.error(err, "\nplease install cmake before trying to install claw-js.");
 }
 
 try {
-    child_process.execSync('ninja --version');
+	child_process.execSync('ninja --version');
 } catch (err) {
-    console.error(err, "\nplease install ninja before trying to install claw-js.");
+	console.error(err, "\nplease install ninja before trying to install claw-js.");
 }
 
 (async () => {
-    try {
-        if (fs.existsSync(`${__dirname}/node_modules/claw-src`)) {
-            fs.rmSync(`${__dirname}/node_modules/claw-src`, {force: true, recursive: true});
-        }
-        child_process.execSync(`git clone --recursive --branch dev https://github.com/tussoftwaredesign/claw-js.git ${__dirname}/node_modules/claw-src`);
+	try {
+		if (fs.existsSync(`${__dirname}/node_modules/claw-src`)) {
+			fs.rmSync(`${__dirname}/node_modules/claw-src`, { force: true, recursive: true });
+		}
+		child_process.execSync(`git clone --recursive --branch dev https://github.com/tussoftwaredesign/claw-js.git ${__dirname}/node_modules/claw-src`);
 
-        process.chdir(`${__dirname}/node_modules/claw-src`);
+		process.chdir(`${__dirname}/node_modules/claw-src`);
 
-        child_process.execSync('mkdir build');
+		child_process.execSync('mkdir build');
 
-        child_process.execSync(`cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release`);
-        await compile();
+		child_process.execSync(`cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release`);
+		await compile();
 
-        let libclaw = 'libclaw.so';
+		let libclaw = 'libclaw.so';
 
-        switch (process.platform) {
-            case "darwin":
-                libclaw = "libclaw.dylib";
-                break;
-            case "win32":
-                libclaw = "libclaw.dll";
-                break;
-        }
+		switch (process.platform) {
+			case "darwin":
+				libclaw = "libclaw.dylib";
+				break;
+			case "win32":
+				libclaw = "libclaw.dll";
+				break;
+		}
 
-        if (!fs.existsSync('../.bin')) {
-            fs.mkdirSync('../.bin');
-        }
+		if (!fs.existsSync('../.bin')) {
+			fs.mkdirSync('../.bin');
+		}
 
-        fs.renameSync(`./build/${libclaw}`, `../.bin/${libclaw}`);
+		fs.renameSync(`./build/${libclaw}`, `../.bin/${libclaw}`);
 
-        const libclawAbsolutePath = `${__dirname}/node_modules/.bin/${libclaw}`;
+		const libclawAbsolutePath = `${__dirname}/node_modules/.bin/${libclaw}`;
 
-        if (!fs.existsSync('../claw-js')) {
-            fs.mkdirSync('../claw-js');
-        }
+		if (!fs.existsSync('../claw-js')) {
+			fs.mkdirSync('../claw-js');
+		}
 
-        fs.writeFileSync('../claw-js/.env', `LIBCLAW_PATH=${libclawAbsolutePath}`);
+		fs.writeFileSync('../claw-js/.env', `LIBCLAW_PATH=${libclawAbsolutePath}`);
 
-        process.chdir(`../..`);
-        fs.rmSync('./node_modules/claw-src', {force: true, recursive: true});
+		process.chdir(`../..`);
+		fs.rmSync('./node_modules/claw-src', { force: true, recursive: true });
 
-        console.log('Claw.js installed.');
-    } catch (err) {
-        console.error(err);
-    }
+		console.log('Claw.js installed.');
+	} catch (err) {
+		console.error(err);
+	}
 })();
