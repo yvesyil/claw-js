@@ -5,20 +5,28 @@
 
 extern struct claw_opencl_ctx ctx;
 
-static claw_err manage_buffers(struct claw_mat *lhs, struct claw_mat *rhs,
-			       struct claw_mat *res)
+claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
+		     struct claw_mat *res)
 {
+	if (lhs->dlen[1] != rhs->dlen[0]) {
+		return CLAW_MATRIX_E_DIM_MISMATCH;
+	}
+
+	if (lhs->dtype != rhs->dtype) {
+		return CLAW_MATRIX_E_DTYPE_MISMATCH;
+	}
+
+	if (res == NULL || res->dlen[0] != lhs->dlen[0] || res->dlen[1] != rhs->dlen[1] || res->dtype != lhs->dtype) {
+		claw_create_matrix(res, lhs->dlen[0], rhs->dlen[1], lhs->dtype);
+	}
+
 	cl_int *err = &ctx.err;
 
-	size_t lhs_bsize =
-		lhs->dlen[0] * lhs->dlen[1] * claw_dtype_byte_size(lhs->dtype);
-	size_t rhs_bsize =
-		rhs->dlen[0] * rhs->dlen[1] * claw_dtype_byte_size(rhs->dtype);
-	size_t res_bsize =
-		res->dlen[0] * res->dlen[1] * claw_dtype_byte_size(res->dtype);
+	size_t lhs_bsize = CLAW_MATRIX_BSIZE(lhs);
+	size_t rhs_bsize = CLAW_MATRIX_BSIZE(rhs);
+	size_t res_bsize = CLAW_MATRIX_BSIZE(res);
 
 	// allocate buffer space
-	//cl_context *ctx = &claw_opencl_context.ctx;
 
 	cl_mem lhs_mem =
 		clCreateBuffer(ctx.ctx, CL_MEM_READ_WRITE, lhs_bsize, NULL, err);
@@ -66,29 +74,6 @@ static claw_err manage_buffers(struct claw_mat *lhs, struct claw_mat *rhs,
 	*err = clReleaseMemObject(res_mem);
 	if (*err != CL_SUCCESS) {
 		return CLAW_OPENCL_E_INTERNAL_IMPL;
-	}
-
-	return CLAW_SUCCESS;
-}
-
-claw_err claw_matmul(struct claw_mat *lhs, struct claw_mat *rhs,
-		     struct claw_mat *res)
-{
-	claw_err err;
-
-	if (lhs->dlen[1] != rhs->dlen[0]) {
-		err = CLAW_MATMUL_E_DIM_MISMATCH;
-		fprintf(stderr, "%s", claw_get_err_str(err));
-		return err;
-	}
-
-	claw_create_matrix(res, lhs->dlen[0], rhs->dlen[1], lhs->dtype);
-
-	err = manage_buffers(lhs, rhs, res);
-	if (err != CLAW_SUCCESS) {
-		fprintf(stderr, "%s %s", claw_get_err_str(err),
-			opencl_get_err_str(ctx.err));
-		return err;
 	}
 
 	return CLAW_SUCCESS;
