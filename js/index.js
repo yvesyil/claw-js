@@ -5,6 +5,6 @@ import { claw_init } from "./src/ffi.js";
 claw_init();
 
 export default {
-	Float32Mat,
-	matmul,
+  Float32Mat,
+  matmul,
 };
