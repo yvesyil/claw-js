@@ -1,11 +1,7 @@
+import util from 'util';
 import ref from 'ref-napi';
 import primitives from './primitives.js';
-import {
-  claw_create_matrix,
-  claw_create_matrix_fill, claw_create_matrix_identity,
-  claw_create_matrix_rand_unit, claw_matrix_get_idx, claw_matrix_set_idx,
-  claw_print_matrix_stdout
-} from './ffi.js';
+import * as ffi from './ffi.js';
 
 export class Matrix {
   #_mat_obj;
@@ -20,8 +16,22 @@ export class Matrix {
     return this.#_mat_obj.ref();
   }
 
+  [util.inspect.custom](depth, opts) {
+    ffi.claw_print_matrix_stdout(this._ref());
+    return this;
+  }
+
   print() {
-    claw_print_matrix_stdout(this._ref());
+    ffi.claw_print_matrix_stdout(this._ref());
+    return this;
+  }
+
+  /**
+   * @param {Matrix} mat
+   */
+  add(mat) {
+    ffi.claw_mataddmat(mat._ref(), this._ref());
+    return this;
   }
 }
 
@@ -29,40 +39,46 @@ export class Matrix {
 export class Float32Mat extends Matrix {
   constructor(rows, cols) {
     super(rows, cols);
-    //claw_create_matrix(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
   }
 
-  fill(val) {
-    let buf = new Buffer(4);
+  fill(val = 0) {
+    let buf = Buffer.alloc(4);
     buf.writeFloatLE(val);
     buf.type = ref.types.float;
-    claw_create_matrix_fill(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32, buf);
+    ffi.claw_create_matrix_fill(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32, buf);
     return this;
   }
 
   identity() {
-    claw_create_matrix_identity(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
+    ffi.claw_create_matrix_identity(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
     return this;
   }
 
   rand(start = null, end = null) {
-    if (start === null && end === null)
-      claw_create_matrix_rand_unit(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
+    if (start === null && end === null) {
+      ffi.claw_create_matrix_rand_unit(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
+    }
     return this;
   }
 
   get(row, col) {
-    let buf = new Buffer(4);
+    let buf = Buffer.alloc(4);
     buf.type = ref.types.float;
-    claw_matrix_get_idx(this._ref(), row, col, buf);
+    ffi.claw_matrix_get_idx(this._ref(), row, col, buf);
     return buf.deref();
   }
 
   set(row, col, val) {
-    let buf = new Buffer(4);
+    let buf = Buffer.alloc(4);
     buf.writeFloatLE(val);
     buf.type = ref.types.float;
-    claw_matrix_set_idx(this._ref(), row, col, buf);
+    ffi.claw_matrix_set_idx(this._ref(), row, col, buf);
     return this;
+  }
+
+  copy() {
+    let cp = new Float32Mat(this.rows, this.cols).fill(111);
+    ffi.claw_matrix_copy(this._ref(), cp._ref());
+    return cp;
   }
 }

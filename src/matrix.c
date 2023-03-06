@@ -66,7 +66,6 @@
 				__PRINT_INNER(fp, type, mat, ph, flags[1])  \
 			}                                                   \
 		}                                                           \
-                                                                            \
 	} while (0);
 
 #define FILL_DIAGONAL(type, mat, val)                          \
@@ -131,7 +130,7 @@ void claw_print_matrix_stdout(struct claw_mat *mat)
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype)
 {
-	free(mat->data);
+	//free(mat->data);
 	mat->data = calloc(row * col, claw_dtype_byte_size(dtype));
 	mat->dlen[0] = row;
 	mat->dlen[1] = col;
