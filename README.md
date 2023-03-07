@@ -23,7 +23,7 @@ However, support for [CUDA](https://developer.nvidia.com/cuda-zone) will come in
 - Language: C11
 - Build tool: [CMake](https://cmake.org/)
 - Device (GPU) API: [OpenCL](https://www.khronos.org/opencl/)
-- Testing: [Unity](https://github.com/ThrowTheSwitch/Unity) for C, [Jest](https://jestjs.io/) for JS.
+- Testing: [Unity](https://github.com/ThrowTheSwitch/Unity) for C, [Mocha](https://mochajs.org/) for JS.
 
 ## Goals
 
