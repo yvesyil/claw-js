@@ -1,4 +1,4 @@
-export function testMatrixDot(A, B) {
+export function naiveMatmul(A, B) {
   let result = new Array(A.length).fill(0).map(row => new Array(B[0].length).fill(0));
 
   return result.map((row, i) => {
@@ -8,11 +8,7 @@ export function testMatrixDot(A, B) {
   })
 }
 
-export function getRandomInclusive(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-export function testArray(rows, cols, fn) {
+export function naiveMatrix(rows, cols, fn) {
   const arr = new Array(rows);
   for (let i = 0; i < arr.length; i++) {
     arr[i] = new Array(cols);
