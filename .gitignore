@@ -1,4 +1,7 @@
 cmake-build-debug/
 .idea/
 .DS_Store
+.vscode
 unused/
+cmake-build-release/
+build/
