@@ -130,7 +130,6 @@ void claw_print_matrix_stdout(struct claw_mat *mat)
 claw_err claw_create_matrix(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			    enum claw_dtype dtype)
 {
-	//free(mat->data);
 	mat->data = calloc(row * col, claw_dtype_byte_size(dtype));
 	mat->dlen[0] = row;
 	mat->dlen[1] = col;
@@ -361,25 +360,26 @@ claw_err claw_matrix_copy(struct claw_mat *mat, struct claw_mat *res)
 
 	claw_create_matrix(res, mat->dlen[0], mat->dlen[1], mat->dtype);
 	size_t mat_bsize = CLAW_MATRIX_BSIZE(mat);
-	memcpy(mat->data, res->data, mat_bsize);
+	memcpy(res->data, mat->data, mat_bsize);
 
 	return CLAW_SUCCESS;
 }
 
 claw_err claw_matrix_cast_inplace(struct claw_mat *mat, enum claw_dtype dtype)
 {
-	if (mat->dtype == dtype) {
-		return CLAW_OP_E_UNNECESSARY;
-	}
+	//if (mat->dtype == dtype) {
+	//	return CLAW_OP_E_UNNECESSARY;
+	//}
 
 	struct claw_mat cp;
+
 	claw_create_matrix(&cp, mat->dlen[0], mat->dlen[1], dtype);
 
-	void *val;
+	double val;
 	for (claw_dlen i = 0; i < mat->dlen[0]; i++) {
 		for (claw_dlen j = 0; j < mat->dlen[1]; j++) {
-			claw_matrix_get_idx(mat, i, j, val);
-			claw_matrix_set_idx(&cp, i, j, val);
+			claw_matrix_get_idx(mat, i, j, &val);
+			claw_matrix_set_idx(&cp, i, j, &val);
 		}
 	}
 
