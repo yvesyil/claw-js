@@ -3,10 +3,15 @@ export function naiveMatmul(A, B) {
 
   return result.map((row, i) => {
     return row.map((val, j) => {
-      return A[i].reduce((sum, elm, k) => sum + (elm * B[k][j]), 0)
+      return A[i].reduce((sum, elm, k) => sum + (elm * B[k][j]), 0);
     })
   })
 }
+
+export function getRandomInclusive(min, max) {
+  return (Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+}
+
 
 export function naiveMatrix(rows, cols, fn) {
   const arr = new Array(rows);
@@ -15,7 +20,7 @@ export function naiveMatrix(rows, cols, fn) {
   }
 
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length; j++) {
+    for (let j = 0; j < arr[0].length; j++) {
       arr[i][j] = fn();
     }
   }
