@@ -77,7 +77,7 @@ export class Float32Mat extends Matrix {
   }
 
   copy() {
-    let cp = new Float32Mat(this.rows, this.cols).fill(111);
+    let cp = new Float32Mat(this.rows, this.cols);
     ffi.claw_matrix_copy(this._ref(), cp._ref());
     return cp;
   }
