@@ -190,43 +190,43 @@ claw_err claw_matrix_get_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 	switch (mat->dtype) {
 	case CLAW_INT8:
 		*(int8_t *)val =
-			CLAW_INDEX(int8_t, mat->data, mat->dlen[0] * row + col);
+			CLAW_INDEX(int8_t, mat->data, mat->dlen[1] * row + col);
 		break;
 	case CLAW_UINT8:
 		*(uint8_t *)val = CLAW_INDEX(uint8_t, mat->data,
-					     mat->dlen[0] * row + col);
+					     mat->dlen[1] * row + col);
 		break;
 	case CLAW_INT16:
 		*(int16_t *)val = CLAW_INDEX(int16_t, mat->data,
-					     mat->dlen[0] * row + col);
+					     mat->dlen[1] * row + col);
 		break;
 	case CLAW_UINT16:
 		*(uint16_t *)val = CLAW_INDEX(uint16_t, mat->data,
-					      mat->dlen[0] * row + col);
+					      mat->dlen[1] * row + col);
 		break;
 	case CLAW_INT32:
 		*(int32_t *)val = CLAW_INDEX(int32_t, mat->data,
-					     mat->dlen[0] * row + col);
+					     mat->dlen[1] * row + col);
 		break;
 	case CLAW_UINT32:
 		*(uint32_t *)val = CLAW_INDEX(uint32_t, mat->data,
-					      mat->dlen[0] * row + col);
+					      mat->dlen[1] * row + col);
 		break;
 	case CLAW_INT64:
 		*(int64_t *)val = CLAW_INDEX(int64_t, mat->data,
-					     mat->dlen[0] * row + col);
+					     mat->dlen[1] * row + col);
 		break;
 	case CLAW_UINT64:
 		*(uint64_t *)val = CLAW_INDEX(uint64_t, mat->data,
-					      mat->dlen[0] * row + col);
+					      mat->dlen[1] * row + col);
 		break;
 	case CLAW_FLT32:
 		*(float *)val =
-			CLAW_INDEX(float, mat->data, mat->dlen[0] * row + col);
+			CLAW_INDEX(float, mat->data, mat->dlen[1] * row + col);
 		break;
 	case CLAW_FLT64:
 		*(double *)val =
-			CLAW_INDEX(double, mat->data, mat->dlen[0] * row + col);
+			CLAW_INDEX(double, mat->data, mat->dlen[1] * row + col);
 		break;
 	}
 
@@ -246,39 +246,39 @@ claw_err claw_matrix_set_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			*(int8_t *)val;
 		break;
 	case CLAW_UINT8:
-		CLAW_INDEX(uint8_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(uint8_t, mat->data, mat->dlen[1] * row + col) =
 			*(uint8_t *)val;
 		break;
 	case CLAW_INT16:
-		CLAW_INDEX(int16_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(int16_t, mat->data, mat->dlen[1] * row + col) =
 			*(int16_t *)val;
 		break;
 	case CLAW_UINT16:
-		CLAW_INDEX(uint16_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(uint16_t, mat->data, mat->dlen[1] * row + col) =
 			*(uint16_t *)val;
 		break;
 	case CLAW_INT32:
-		CLAW_INDEX(int32_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(int32_t, mat->data, mat->dlen[1] * row + col) =
 			*(int32_t *)val;
 		break;
 	case CLAW_UINT32:
-		CLAW_INDEX(uint32_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(uint32_t, mat->data, mat->dlen[1] * row + col) =
 			*(uint32_t *)val;
 		break;
 	case CLAW_INT64:
-		CLAW_INDEX(int64_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(int64_t, mat->data, mat->dlen[1] * row + col) =
 			*(int64_t *)val;
 		break;
 	case CLAW_UINT64:
-		CLAW_INDEX(uint64_t, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(uint64_t, mat->data, mat->dlen[1] * row + col) =
 			*(uint64_t *)val;
 		break;
 	case CLAW_FLT32:
-		CLAW_INDEX(float, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(float, mat->data, mat->dlen[1] * row + col) =
 			*(float *)val;
 		break;
 	case CLAW_FLT64:
-		CLAW_INDEX(double, mat->data, mat->dlen[0] * row + col) =
+		CLAW_INDEX(double, mat->data, mat->dlen[1] * row + col) =
 			*(double *)val;
 		break;
 	}

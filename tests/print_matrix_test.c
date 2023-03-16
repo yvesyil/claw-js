@@ -104,6 +104,7 @@ void print_mat_flt64()
 
 int main()
 {
+	claw_init();
 	UNITY_BEGIN();
 	RUN_TEST(print_mat_int8);
 	RUN_TEST(print_mat_uint8);
