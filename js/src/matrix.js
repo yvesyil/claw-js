@@ -25,6 +25,10 @@ export class Matrix {
     ffi.claw_print_matrix_stdout(this._ref());
     return this;
   }
+
+  shape() {
+    return [ this.rows, this.cols ];
+  }
 }
 
 
