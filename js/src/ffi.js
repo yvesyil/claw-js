@@ -19,6 +19,7 @@ export const {
   claw_matrix_get_idx,
   claw_matrix_set_idx,
   claw_matrix_copy,
+  claw_matrix_transpose,
 
   // ops
   claw_matmul,
@@ -35,6 +36,7 @@ export const {
   'claw_matrix_get_idx': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.refType(ref.types.void)]],
   'claw_matrix_set_idx': [ref.types.int, [primitives._mat_ptr, ref.types.ulonglong, ref.types.ulonglong, ref.refType(ref.types.void)]],
   'claw_matrix_copy': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr]],
+  'claw_matrix_transpose': [ref.types.int, [primitives._mat_ptr]],
 
   // ops
   'claw_matmul': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr, primitives._mat_ptr]],

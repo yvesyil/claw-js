@@ -389,6 +389,27 @@ claw_err claw_matrix_cast_inplace(struct claw_mat *mat, enum claw_dtype dtype)
 	return CLAW_SUCCESS;
 }
 
+claw_err claw_matrix_transpose(struct claw_mat *mat)
+{
+	struct claw_mat res;
+
+	claw_create_matrix(&res, mat->dlen[1], mat->dlen[0], mat->dtype);
+
+	float val;
+	for (claw_dlen i = 0; i < mat->dlen[0]; i++) {
+		for (claw_dlen j = 0; j < mat->dlen[1]; j++) {
+			claw_matrix_get_idx(mat, i, j, &val);
+			claw_matrix_set_idx(&res, j, i, &val);
+		}
+	}
+
+	mat->dlen[0] = res.dlen[0];
+	mat->dlen[1] = res.dlen[1];
+	mat->data = res.data;
+
+	return CLAW_SUCCESS;
+}
+
 claw_err claw_free(struct claw_mat *mat)
 {
 	free(mat->data);

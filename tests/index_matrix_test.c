@@ -2,6 +2,7 @@
 #include "../include/claw.h"
 
 static struct claw_mat flt32_mat;
+static struct claw_mat flt32_mat2;
 static struct claw_mat flt64_mat;
 
 void setUp()
@@ -9,12 +10,14 @@ void setUp()
 	float valf = 69;
 	double vald = 69;
 	claw_create_matrix_fill(&flt32_mat, 16, 8, CLAW_FLT32, &valf);
+	claw_create_matrix_rand_unit(&flt32_mat2, 16, 5, CLAW_FLT32);
 	claw_create_matrix_fill(&flt64_mat, 5, 10, CLAW_FLT64, &vald);
 }
 
 void tearDown()
 {
 	claw_free(&flt32_mat);
+	claw_free(&flt32_mat2);
 	claw_free(&flt64_mat);
 }
 
@@ -41,6 +44,30 @@ void index_mat_flt32()
 				strcat(msg, "value should've been equal to 69.");
 				TEST_ASSERT_TRUE_MESSAGE(val == 69, msg);
 			}
+		}
+	}
+}
+
+void transpose_mat_flt32()
+{
+	float val;
+	float val2;
+	claw_err err;
+	err = claw_matrix_copy(&flt32_mat2, &flt32_mat);
+	TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+
+	err = claw_matrix_transpose(&flt32_mat);
+	TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+
+	char msg[256];
+	for (size_t i = 0; i < flt32_mat2.dlen[0]; i++) {
+		for (size_t j = 0; j < flt32_mat2.dlen[1]; j++) {
+			err = claw_matrix_get_idx(&flt32_mat2, i, j, &val2);
+			err = claw_matrix_get_idx(&flt32_mat, j, i, &val);
+			TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+
+			sprintf(msg, "ERROR @ IDX %lu:%lu : ", i, j);
+			TEST_ASSERT_TRUE_MESSAGE(val == val2, "two values are not equal.");
 		}
 	}
 }
@@ -72,11 +99,13 @@ void index_mat_flt64()
 	}
 }
 
+
 int main()
 {
 	claw_init();
 	UNITY_BEGIN();
 	RUN_TEST(index_mat_flt32);
 	RUN_TEST(index_mat_flt64);
+	RUN_TEST(transpose_mat_flt32);
 	return UNITY_END();
 }

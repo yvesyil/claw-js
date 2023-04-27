@@ -81,4 +81,9 @@ export class Float32Mat extends Matrix {
     ffi.claw_matrix_copy(this._ref(), cp._ref());
     return cp;
   }
+
+  T() {
+    ffi.claw_matrix_transpose(this._ref());
+    return this;
+  }
 }

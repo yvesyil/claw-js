@@ -1,4 +1,4 @@
-import claw from '../index.js';
+import claw from '../src/index.js';
 import assert from 'assert';
 
 const mockValue = 69
@@ -74,4 +74,20 @@ describe('Matrix', () => {
       }
     });
   });
+
+  describe('#transpose', () => {
+    it('should transpose the matrix', () => {
+      const a = new claw.Float32Mat(73, 13);
+
+      const b = a.copy();
+
+      a.T();
+
+      for (let i = 0; i < b.rows; i++) {
+        for (let j = 0; j < b.cols; j++) {
+          assert(a.get(j, i) === b.get(i, j), 'the values should be equal');
+        }
+      }
+    });
+  })
 });

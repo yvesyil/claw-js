@@ -42,6 +42,8 @@ claw_err claw_matrix_get_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 claw_err claw_matrix_set_idx(struct claw_mat *mat, claw_dlen row, claw_dlen col,
 			     void *val);
 
+claw_err claw_matrix_transpose(struct claw_mat *mat);
+
 claw_err claw_matrix_cast_inplace(struct claw_mat *mat, enum claw_dtype dtype);
 claw_err claw_matrix_copy(struct claw_mat *mat, struct claw_mat *res);
 
