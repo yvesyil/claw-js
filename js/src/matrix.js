@@ -25,14 +25,6 @@ export class Matrix {
     ffi.claw_print_matrix_stdout(this._ref());
     return this;
   }
-
-  /**
-   * @param {Matrix} mat
-   */
-  add(mat) {
-    ffi.claw_mataddmat(mat._ref(), this._ref());
-    return this;
-  }
 }
 
 
@@ -82,8 +74,32 @@ export class Float32Mat extends Matrix {
     return cp;
   }
 
+  /**
+   * @param {Float32Mat} mat
+   */
+  add(mat) {
+    ffi.claw_mataddmat(mat._ref(), this._ref());
+    return this;
+  }
+
+  /**
+   * @param {Float32Mat} mat
+   */
+  sub(mat) {
+    ffi.claw_matsubmat(mat._ref(), this._ref());
+    return this;
+  }
+
   T() {
     ffi.claw_matrix_transpose(this._ref());
+    return this;
+  }
+
+  scale(val) {
+    let buf = Buffer.alloc(4);
+    buf.writeFloatLE(val);
+    buf.type = ref.types.float;
+    ffi.claw_matscale(this._ref(), buf);
     return this;
   }
 }

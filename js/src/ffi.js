@@ -24,6 +24,9 @@ export const {
   // ops
   claw_matmul,
   claw_mataddmat,
+  claw_matsubmat,
+  claw_matscale,
+  claw_hadamard,
   claw_print_matrix_stdout
 } = ffi.Library(process.env.LIBCLAW_PATH, {
   'claw_init': [ref.types.int, []],
@@ -41,5 +44,8 @@ export const {
   // ops
   'claw_matmul': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr, primitives._mat_ptr]],
   'claw_mataddmat': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr]],
+  'claw_matsubmat': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr]],
+  'claw_matscale': [ref.types.int, [primitives._mat_ptr, ref.refType(ref.types.void)]],
+  'claw_hadamard': [ref.types.int, [primitives._mat_ptr, primitives._mat_ptr, primitives._mat_ptr]],
   'claw_print_matrix_stdout': [ref.types.void, [primitives._mat_ptr]]
 });

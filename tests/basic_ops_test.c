@@ -30,6 +30,40 @@ void mataddmat_test()
 	printf("\n%lf ms\n", duration);
 }
 
+void matsubmat_test()
+{
+	claw_matsubmat(&m1, &m2);
+	claw_matsubmat(&m1, &m2);
+
+	claw_print_matrix_stdout(&m2);
+}
+
+void matscale_test()
+{
+	claw_err err;
+
+	float val = 69.0;
+	err = claw_matscale(&m1, &val);
+	TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+
+	//claw_print_matrix_stdout(&m1);
+}
+
+void hadamard_test()
+{
+	claw_err err;
+	struct claw_mat res;
+
+	float val = 69.0;
+	err = claw_matscale(&m1, &val);
+	TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+	err = claw_matrix_set_idx(&m2, 3, 3, &val);
+	err = claw_hadamard(&m1, &m2, &res);
+	TEST_ASSERT_TRUE_MESSAGE(err == CLAW_SUCCESS, claw_get_err_str(err));
+
+	claw_print_matrix_stdout(&res);
+}
+
 void matrix_copy_test()
 {
 	float val = 69;
@@ -71,6 +105,9 @@ int main()
 	claw_init();
 	UNITY_BEGIN();
 	RUN_TEST(mataddmat_test);
+	RUN_TEST(matsubmat_test);
+	RUN_TEST(matscale_test);
+	RUN_TEST(hadamard_test);
 	RUN_TEST(matrix_copy_test);
 	RUN_TEST(matrix_cast_test);
 	return UNITY_END();

@@ -1,4 +1,4 @@
-import { matmul, add } from "./ops.js";
+import { matmul, add, sub, hadamard } from "./ops.js";
 import { Float32Mat } from "./matrix.js";
 import { claw_init } from "./ffi.js";
 
@@ -8,4 +8,6 @@ export default {
   Float32Mat,
   matmul,
   add,
+  sub,
+  hadamard,
 };

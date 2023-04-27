@@ -60,6 +60,27 @@ describe('Matrix', () => {
     })
   });
 
+  describe('#sub', () => {
+    it('should subtract two matrices inplace', () => {
+      const a = new claw.Float32Mat(6, 6).fill(3);
+      const b = new claw.Float32Mat(6, 6).identity();
+
+      b.scale(72);
+      a.sub(b);
+
+      for (let i = 0; i < a.rows; i++) {
+        for (let j = 0; j < a.cols; j++) {
+          let val = a.get(i, j);
+          if (i === j) {
+            assert(val === -69, `the value should've been equal to 2`);
+          } else {
+            assert(val === 3, `the value should've been equal to 3`);
+          }
+        }
+      }
+    })
+  });
+
   describe('#copy', () => {
     it('should create a copy of the matrix', () => {
       const a = new claw.Float32Mat(6, 6).fill(mockValue);

@@ -26,8 +26,6 @@ describe('Benchmark Float32', () => {
       end = performance.now();
       let cpuTime = end - start;
 
-      console.log(gpuTime);
-      console.log(cpuTime);
       assert(gpuTime < cpuTime);
     });
   });
