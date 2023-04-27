@@ -10,6 +10,8 @@ export declare class Matrix {
   constructor(rows: number, cols: number): Matrix;
 
   print(): void;
+
+  shape(): number[];
 }
 
 export declare class Float32Matrix extends Matrix {
