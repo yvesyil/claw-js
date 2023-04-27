@@ -28,7 +28,7 @@ export class Matrix {
 }
 
 
-export class Float32Mat extends Matrix {
+export class Float32Matrix extends Matrix {
   constructor(rows, cols) {
     super(rows, cols);
   }
@@ -46,7 +46,7 @@ export class Float32Mat extends Matrix {
     return this;
   }
 
-  rand(start = null, end = null) {
+  random(start = null, end = null) {
     if (start === null && end === null) {
       ffi.claw_create_matrix_rand_unit(this._ref(), this.rows, this.cols, primitives._type.CLAW_FLT32);
     }
@@ -69,13 +69,13 @@ export class Float32Mat extends Matrix {
   }
 
   copy() {
-    let cp = new Float32Mat(this.rows, this.cols);
+    let cp = new Float32Matrix(this.rows, this.cols);
     ffi.claw_matrix_copy(this._ref(), cp._ref());
     return cp;
   }
 
   /**
-   * @param {Float32Mat} mat
+   * @param {Float32Matrix} mat
    */
   add(mat) {
     ffi.claw_mataddmat(mat._ref(), this._ref());
@@ -83,14 +83,15 @@ export class Float32Mat extends Matrix {
   }
 
   /**
-   * @param {Float32Mat} mat
+   * @param {Float32Matrix} mat
    */
-  sub(mat) {
+  subtract(mat) {
     ffi.claw_matsubmat(mat._ref(), this._ref());
     return this;
   }
 
   T() {
+    [ this.rows, this.cols ] = [ this.cols, this.rows ];
     ffi.claw_matrix_transpose(this._ref());
     return this;
   }
