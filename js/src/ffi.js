@@ -4,9 +4,9 @@ const primitives = require('./primitives.js');
 const dotenv = require('dotenv');
 const path = require('path');
 
-//const __dirname = path.resolve();
+const _dirname = path.resolve();
 
-dotenv.config({ path: `${__dirname}/node_modules/claw-js/.env` });
+dotenv.config({ path: `${_dirname}/../../node_modules/claw-js/.env` });
 
 module.exports = {
   claw_init,
