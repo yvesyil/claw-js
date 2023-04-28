@@ -1,14 +1,14 @@
-import ffi from 'ffi-napi';
-import ref from 'ref-napi';
-import primitives from './primitives.js';
-import * as dotenv from 'dotenv';
-import path from 'path';
+const ffi = require('ffi-napi');
+const ref = require('ref-napi');
+const primitives = require('./primitives.js');
+const dotenv = require('dotenv');
+const path = require('path');
 
-const __dirname = path.resolve();
+//const __dirname = path.resolve();
 
 dotenv.config({ path: `${__dirname}/node_modules/claw-js/.env` });
 
-export const {
+module.exports = {
   claw_init,
 
   // matrix

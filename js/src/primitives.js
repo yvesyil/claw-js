@@ -1,6 +1,6 @@
-import ref from 'ref-napi';
-import StructTypeModule from 'ref-struct-di';
-import ArrayTypeModule from 'ref-array-di';
+const ref = require('ref-napi');
+const StructTypeModule = require('ref-struct-di');
+const ArrayTypeModule = require('ref-array-di');
 
 const StructType = StructTypeModule(ref);
 const ArrayType = ArrayTypeModule(ref);
@@ -28,7 +28,7 @@ const _mat = StructType({
 
 const _mat_ptr = ref.refType(_mat);
 
-export default {
+module.exports = {
   _type,
   _dlen_arr,
   _mat,

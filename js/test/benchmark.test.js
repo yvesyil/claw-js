@@ -1,17 +1,17 @@
-import claw from '../src/index.js';
-import assert from 'assert';
-import {naiveMatmul, naiveMatrix, getRandomInclusive} from './common.js';
+const claw = require('../src/index');
+const assert = require('assert');
+const {naiveMatmul, naiveMatrix, getRandomInclusive} = require('./common');
 
 describe('Benchmark Float32', () => {
   describe('1x784 * 784x100', () => {
     it('should be faster than naive multiply', () => {
-      let a = new claw.Float32Mat(1, 784).rand();
-      let b = new claw.Float32Mat(784, 100).rand();
+      let a = new claw.Float32Matrix(1, 784).random();
+      let b = new claw.Float32Matrix(784, 100).random();
 
       claw.matmul(a, b);
 
-      a = new claw.Float32Mat(1, 784).rand();
-      b = new claw.Float32Mat(784, 100).rand();
+      a = new claw.Float32Matrix(1, 784).random();
+      b = new claw.Float32Matrix(784, 100).random();
 
       let start = performance.now();
       let d = claw.matmul(a, b);

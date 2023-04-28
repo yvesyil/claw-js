@@ -1,12 +1,12 @@
-import claw from '../src/index.js';
-import assert from 'assert';
+const claw = require('../src/index');
+const assert = require('assert');
 
 const mockValue = 69
 
 describe('Matrix', () => {
   describe('#set', () => {
     it('should set the value in the given index to given value', () => {
-      const a = new claw.Float32Mat(10, 10).fill(3);
+      const a = new claw.Float32Matrix(10, 10).fill(3);
 
       a.set(3, 8, mockValue); 
       
@@ -25,7 +25,7 @@ describe('Matrix', () => {
 
   describe('#get', () => {
     it('should return the value in the given index', () => {
-      const a = new claw.Float32Mat(6, 6).identity();
+      const a = new claw.Float32Matrix(6, 6).identity();
 
       for (let i = 0; i < a.rows; i++) {
         for (let j = 0; j < a.cols; j++) {
@@ -42,8 +42,8 @@ describe('Matrix', () => {
 
   describe('#add', () => {
     it('should add two matrices inplace', () => {
-      const a = new claw.Float32Mat(6, 6).fill(2);
-      const b = new claw.Float32Mat(6, 6).identity();
+      const a = new claw.Float32Matrix(6, 6).fill(2);
+      const b = new claw.Float32Matrix(6, 6).identity();
 
       a.add(b);
 
@@ -60,13 +60,13 @@ describe('Matrix', () => {
     })
   });
 
-  describe('#sub', () => {
+  describe('#subtract', () => {
     it('should subtract two matrices inplace', () => {
-      const a = new claw.Float32Mat(6, 6).fill(3);
-      const b = new claw.Float32Mat(6, 6).identity();
+      const a = new claw.Float32Matrix(6, 6).fill(3);
+      const b = new claw.Float32Matrix(6, 6).identity();
 
       b.scale(72);
-      a.sub(b);
+      a.subtract(b);
 
       for (let i = 0; i < a.rows; i++) {
         for (let j = 0; j < a.cols; j++) {
@@ -83,7 +83,7 @@ describe('Matrix', () => {
 
   describe('#copy', () => {
     it('should create a copy of the matrix', () => {
-      const a = new claw.Float32Mat(6, 6).fill(mockValue);
+      const a = new claw.Float32Matrix(6, 6).fill(mockValue);
 
       const b = a.copy();
 
@@ -98,7 +98,7 @@ describe('Matrix', () => {
 
   describe('#transpose', () => {
     it('should transpose the matrix', () => {
-      const a = new claw.Float32Mat(73, 13);
+      const a = new claw.Float32Matrix(73, 13);
 
       const b = a.copy();
 

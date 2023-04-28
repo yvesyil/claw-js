@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import child_process from "child_process";
-import path from 'path';
-import fs from 'fs';
+const child_process = require("child_process");
+const path = require('path');
+const fs = require('fs');
 
 async function compile() {
   let compilation = child_process.spawn('cmake', ['--build', 'build', '-j10']);

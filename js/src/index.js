@@ -1,11 +1,11 @@
-import { matmul, add, sub, hadamard } from "./ops.js";
-import { Float32Mat } from "./matrix.js";
-import { claw_init } from "./ffi.js";
+const { matmul, add, sub, hadamard } = require("./ops");
+const { Float32Matrix } = require("./matrix");
+const { claw_init } = require("./ffi");
 
 claw_init();
 
-export default {
-  Float32Mat,
+module.exports = {
+  Float32Matrix,
   matmul,
   add,
   sub,

@@ -1,9 +1,9 @@
-import util from 'util';
-import ref from 'ref-napi';
-import primitives from './primitives.js';
-import * as ffi from './ffi.js';
+const util = require('util');
+const ref = require('ref-napi');
+const primitives = require('./primitives');
+const ffi = require('./ffi');
 
-export class Matrix {
+class Matrix {
   #_mat_obj;
 
   constructor(rows, cols) {
@@ -32,7 +32,7 @@ export class Matrix {
 }
 
 
-export class Float32Matrix extends Matrix {
+module.exports.Float32Matrix = class Float32Matrix extends Matrix {
   constructor(rows, cols) {
     super(rows, cols);
   }
