@@ -1,6 +1,6 @@
 {
   "name": "claw-js",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A hardware accelerated linear algebra library",
   "main": "src/index.js",
   "types": "types/index.d.ts",
